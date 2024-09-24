@@ -12,7 +12,7 @@ services:
       -c max_wal_size=2GB
     container_name: dbzpostgresql
     ports:
-      - 5432:5432
+      - 54321:5432
     environment:
       - POSTGRES_DB=keycloak
       - POSTGRES_USER=postgres
@@ -33,6 +33,6 @@ services:
     command:
       - start-dev
     ports:
-      - "8043:8080"
+      - "7080:8080"
     depends_on:
       - dbzpostgresql
