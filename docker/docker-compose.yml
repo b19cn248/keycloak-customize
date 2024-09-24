@@ -1,0 +1,38 @@
+
+
+version: '2'
+
+services:
+  #PostgreSQL Master
+  dbzpostgresql:
+    image: quay.io/debezium/postgres:15
+    command:
+      -c work_mem=512MB
+      -c maintenance_work_mem=512MB
+      -c max_wal_size=2GB
+    container_name: dbzpostgresql
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=keycloak
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      - ALLOW_EMPTY_PASSWORD=yes
+
+  # KEYCLOAD
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.1
+    volumes:
+      - ./keycloak_themes:/opt/keycloak/themes
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://dbzpostgresql/keycloak?user=postgres&password=postgres
+    command:
+      - start-dev
+    ports:
+      - "8043:8080"
+    depends_on:
+      - dbzpostgresql
