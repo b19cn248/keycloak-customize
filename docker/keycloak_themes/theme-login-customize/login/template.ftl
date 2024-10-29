@@ -14,7 +14,6 @@
         </#list>
     </#if>
     <title>${msg("loginTitle",(realm.displayName!''))}</title>
-    <link rel="icon" href="https://www.chip1stop.com/images/common/favicon.ico" />
     <#if properties.stylesCommon?has_content>
         <#list properties.stylesCommon?split(' ') as style>
             <link href="${url.resourcesCommonPath}/${style}" rel="stylesheet" />
@@ -59,10 +58,10 @@
                 <#elseif client.clientId == "exchange-contract-web">
                     ${msg("appNameExchangeContract")}
                 <#else>
-                    ${msg("appNameC1S")}
+                    ${msg("appName")}
                 </#if>
             <#else>
-                ${msg("appNameC1S")}
+                ${msg("appName")}
             </#if>
         </div>
     </div>

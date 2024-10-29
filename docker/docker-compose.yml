@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-  #PostgreSQL Master
+  # PostgreSQL Master
   dbzpostgresql:
     image: quay.io/debezium/postgres:15
     command:
@@ -15,16 +15,18 @@ services:
       - POSTGRES_DB=keycloak
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      # ALLOW_EMPTY_PASSWORD is recommended only for development.
-      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Thêm volume cho PostgreSQL
     networks:
       - shop-sport-micro
 
-  # KEYCLOAD
+  # KEYCLOAK
   keycloak:
     image: quay.io/keycloak/keycloak:23.0.1
     volumes:
       - ./keycloak_themes:/opt/keycloak/themes
+      - ./plugins/keycloak-2fa-email-authenticator-1.0.0.0-SNAPSHOT.jar:/opt/keycloak/providers/keycloak-2fa-email-authenticator-1.0.0.0-SNAPSHOT.jar
+      - ./plugins/email:/opt/keycloak/themes/base/email
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
@@ -43,3 +45,6 @@ services:
 networks:
   shop-sport-micro:
     external: true
+
+volumes:
+  postgres_data: # Định nghĩa volume ngoài
