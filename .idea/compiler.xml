@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="risk-base" />
+        <module name="user-information" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="keycloak" target="17" />
+      <module name="provider-action-token-authenticator" target="1.5" />
+      <module name="save-information-user-login" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

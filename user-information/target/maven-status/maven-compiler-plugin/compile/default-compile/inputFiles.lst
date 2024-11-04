@@ -1,0 +1,6 @@
+/home/hieu/keycloak/keycloak-customize/user-information/src/main/java/com/openlearnhub/user/model/UserLoginHistory.java
+/home/hieu/keycloak/keycloak-customize/user-information/src/main/java/com/openlearnhub/user/authenticator/SaveUserInfoAuthenticator.java
+/home/hieu/keycloak/keycloak-customize/user-information/src/main/java/com/openlearnhub/user/dao/UserLoginHistoryDAO.java
+/home/hieu/keycloak/keycloak-customize/user-information/src/main/java/com/openlearnhub/user/constant/Constant.java
+/home/hieu/keycloak/keycloak-customize/user-information/src/main/java/com/openlearnhub/user/authenticator/SaveUserInfoAuthenticatorFactory.java
+/home/hieu/keycloak/keycloak-customize/user-information/src/main/java/com/openlearnhub/user/util/DatabaseConnector.java
