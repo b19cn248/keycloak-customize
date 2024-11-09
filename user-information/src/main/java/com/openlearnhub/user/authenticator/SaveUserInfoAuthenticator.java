@@ -4,9 +4,6 @@ import com.openlearnhub.user.constant.Constant;
 import com.openlearnhub.user.dao.UserLoginHistoryDAO;
 import com.openlearnhub.user.model.UserLoginHistory;
 import lombok.extern.slf4j.Slf4j;
-import nl.basjes.parse.useragent.UserAgent;
-import nl.basjes.parse.useragent.UserAgentAnalyzer;
-import nl.basjes.parse.useragent.utils.springframework.util.StringUtils;
 import org.apache.commons.validator.routines.InetAddressValidator;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.Authenticator;
@@ -14,6 +11,9 @@ import org.keycloak.models.AuthenticatorConfigModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
+import org.keycloak.utils.StringUtil;
+import ua_parser.Client;
+import ua_parser.Parser;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -39,17 +39,19 @@ public class SaveUserInfoAuthenticator implements Authenticator {
         AuthenticatorConfigModel config = context.getAuthenticatorConfig();
         String clientName = config.getConfig().get(Constant.CLIENT);
         // prepare UserLoginHistory, insert if not exist in DB
-        UserAgentAnalyzer userAgentAnalyzer = UserAgentAnalyzer.newBuilder().build();
-        UserAgent userAgent = userAgentAnalyzer.parse(
-                context.getHttpRequest().getHttpHeaders().getHeaderString(Constant.USER_AGENT));
+        String userAgentString = context.getHttpRequest().getHttpHeaders().getHeaderString(Constant.USER_AGENT);
+
+        // Sử dụng ua-parser để phân tích User-Agent
+        Parser uaParser = new Parser();
+        Client client = uaParser.parse(userAgentString);
 
         UserLoginHistory userLoginHistory = null;
         try {
             userLoginHistory = UserLoginHistory.builder()
                     .userId(context.getUser().getId())
                     .ipAddress(getIpAddress(context))
-                    .operatingSystem(userAgent.getValue(Constant.OPERATING_SYSTEM))
-                    .browser(userAgent.getValue(Constant.BROWSER))
+                    .operatingSystem(client.os.family)
+                    .browser(client.userAgent.family)
                     .timeLogin(new Timestamp(System.currentTimeMillis()))
                     .client(clientName)
                     .build();
@@ -117,7 +119,7 @@ public class SaveUserInfoAuthenticator implements Authenticator {
         );
         for (String ipHeader : possibleIpHeaders) {
             String headerValue = context.getHttpRequest().getHttpHeaders().getHeaderString(ipHeader);
-            if (StringUtils.hasLength(headerValue) && validator.isValid(headerValue)) {
+            if (!StringUtil.isNullOrEmpty(headerValue) && validator.isValid(headerValue)) {
                 ipAddress = headerValue;
                 break;
             }

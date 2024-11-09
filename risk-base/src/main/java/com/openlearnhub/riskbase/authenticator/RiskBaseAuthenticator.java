@@ -3,9 +3,6 @@ package com.openlearnhub.riskbase.authenticator;
 import com.openlearnhub.riskbase.constant.Constant;
 import com.openlearnhub.riskbase.dao.UserLoginHistoryDAO;
 import com.openlearnhub.riskbase.model.UserLoginHistory;
-import nl.basjes.parse.useragent.UserAgent;
-import nl.basjes.parse.useragent.UserAgentAnalyzer;
-import nl.basjes.parse.useragent.utils.springframework.util.StringUtils;
 import org.apache.commons.validator.routines.InetAddressValidator;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.Authenticator;
@@ -13,6 +10,11 @@ import org.keycloak.models.AuthenticatorConfigModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
+import org.keycloak.utils.StringUtil;
+import ua_parser.Client;
+import ua_parser.OS;
+import ua_parser.Parser;
+import ua_parser.UserAgent;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -51,27 +53,29 @@ public class RiskBaseAuthenticator implements Authenticator {
             logger.severe("Error get IP address: " + e);
         }
 
-        UserAgentAnalyzer userAgentAnalyzer = UserAgentAnalyzer.newBuilder().build();
-        UserAgent userAgent = userAgentAnalyzer.parse(
-                context.getHttpRequest().getHttpHeaders().getHeaderString(Constant.USER_AGENT));
 
-        // is strange ip address
+        String userAgentString = context.getHttpRequest().getHttpHeaders().getHeaderString(Constant.USER_AGENT);
 
+        // Sử dụng ua-parser để phân tích User-Agent
+        Parser uaParser = new Parser();
+        Client client = uaParser.parse(userAgentString);
+
+        // Kiểm tra địa chỉ IP lạ
         if (isStrangeIPAddress(ipAddress, loginHistoryList)) {
             context.attempted();
             return;
         }
 
-        // is strange OS
-        if (isStrangeOS(userAgent.getValue(Constant.OPERATING_SYSTEM),
-                loginHistoryList)) {
+        // Kiểm tra hệ điều hành lạ
+        OS os = client.os;
+        if (isStrangeOS(os.family, loginHistoryList)) {
             context.attempted();
             return;
         }
 
-        // is strange browser
-        if (isStrangeBrowser(userAgent.getValue(Constant.BROWSER),
-                loginHistoryList)) {
+        // Kiểm tra trình duyệt lạ
+        UserAgent ua = client.userAgent;
+        if (isStrangeBrowser(ua.family, loginHistoryList)) {
             context.attempted();
             return;
         }
@@ -125,7 +129,7 @@ public class RiskBaseAuthenticator implements Authenticator {
         );
         for (String ipHeader : possibleIpHeaders) {
             String headerValue = context.getHttpRequest().getHttpHeaders().getHeaderString(ipHeader);
-            if (StringUtils.hasLength(headerValue) && validator.isValid(headerValue)) {
+            if (!StringUtil.isNullOrEmpty(headerValue) && validator.isValid(headerValue)) {
                 ipAddress = headerValue;
                 break;
             }
@@ -153,7 +157,6 @@ public class RiskBaseAuthenticator implements Authenticator {
         }
         return true;
     }
-
 
 
     private boolean isStrangeOS(String operatingSystem, List<UserLoginHistory> userLoginHistoryList) {

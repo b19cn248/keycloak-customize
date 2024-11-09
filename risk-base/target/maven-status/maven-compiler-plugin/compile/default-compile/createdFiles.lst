@@ -1,7 +1,0 @@
-com/openlearnhub/riskbase/authenticator/RiskBaseAuthenticator.class
-com/openlearnhub/riskbase/authenticator/RiskBaseAuthenticatorFactory.class
-com/openlearnhub/riskbase/util/DatabaseConnector.class
-com/openlearnhub/riskbase/model/UserLoginHistory$Builder.class
-com/openlearnhub/riskbase/model/UserLoginHistory.class
-com/openlearnhub/riskbase/constant/Constant.class
-com/openlearnhub/riskbase/dao/UserLoginHistoryDAO.class

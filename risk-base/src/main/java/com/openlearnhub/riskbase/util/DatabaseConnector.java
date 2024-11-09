@@ -16,7 +16,7 @@ public class DatabaseConnector {
     public static Connection getConnection() throws SQLException {
         Connection connection = null;
         try {
-            connection = DriverManager.getConnection("jdbc:postgresql://postgres/user_service?stringtype=unspecified",
+            connection = DriverManager.getConnection("jdbc:postgresql://postgres/keycloak?stringtype=unspecified",
                     "postgres", "postgres");
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Database connection error: ", e);
