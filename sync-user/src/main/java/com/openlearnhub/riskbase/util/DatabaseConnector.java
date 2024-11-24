@@ -16,7 +16,7 @@ public class DatabaseConnector {
     public static Connection getConnection() throws SQLException {
         Connection connection = null;
         try {
-            connection = DriverManager.getConnection("jdbc:postgresql://postgres/user_service",
+            connection = DriverManager.getConnection("jdbc:postgresql://postgres/shop_sport?currentSchema=user_service",
                     "postgres", "postgres");
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Database connection error: ", e);
