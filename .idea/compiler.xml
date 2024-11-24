@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="risk-base" />
         <module name="user-information" />
+        <module name="sync-user" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
