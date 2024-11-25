@@ -1,17 +1,21 @@
 package com.openlearnhub.riskbase.authenticator;
 
-import com.openlearnhub.riskbase.util.DatabaseConnector;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventType;
 import org.keycloak.events.admin.AdminEvent;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.UserModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
 public class SyncEventListener implements EventListenerProvider {
+
+    private static final Logger logger = LoggerFactory.getLogger(SyncEventListener.class);
 
     private final KeycloakSession session;
 
@@ -34,7 +38,13 @@ public class SyncEventListener implements EventListenerProvider {
                 String firstName = user.getFirstName();
                 String lastName = user.getLastName();
 
-                try (Connection conn = DatabaseConnector.getConnection()) {
+                // Kết nối tới database
+                String url = "jdbc:postgresql://postgres/shop_sport?currentSchema=user_service";
+                String dbUser = "postgres";
+                String dbPassword = "postgres";
+
+
+                try (Connection conn = DriverManager.getConnection(url, dbUser, dbPassword)) {
                     String sql = "INSERT INTO users (id, email, username, first_name, last_name, created_at, is_deleted, status) " +
                             "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                     try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -50,7 +60,7 @@ public class SyncEventListener implements EventListenerProvider {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Error while syncing user to database: ", e);
             }
         }
     }

@@ -1,7 +1,0 @@
-com/openlearnhub/user/constant/Constant.class
-com/openlearnhub/user/util/DatabaseConnector.class
-com/openlearnhub/user/model/UserLoginHistory.class
-com/openlearnhub/user/authenticator/SaveUserInfoAuthenticator.class
-com/openlearnhub/user/model/UserLoginHistory$Builder.class
-com/openlearnhub/user/dao/UserLoginHistoryDAO.class
-com/openlearnhub/user/authenticator/SaveUserInfoAuthenticatorFactory.class
