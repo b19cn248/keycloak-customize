@@ -18,7 +18,7 @@ services:
       - KEYCLOAK_ADMIN_PASSWORD=admin
       - KC_DB=postgres
       - KC_DB_URL=jdbc:postgresql://postgres/keycloak?user=postgres&password=postgres
-      - KC_HOSTNAME=keycloak.openlearnhub.io.vn
+      - KC_HOSTNAME=https://keycloak.openlearnhub.io.vn
       - PROXY_ADDRESS_FORWARDING=true
       - KC_PROXY=edge
     command:
