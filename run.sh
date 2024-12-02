@@ -20,4 +20,4 @@ cd sync-user
 mvn clean package
 
 echo "Building and starting containers"
-docker compose up --build
+docker compose up -d --build
