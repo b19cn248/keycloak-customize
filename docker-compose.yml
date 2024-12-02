@@ -14,8 +14,8 @@ services:
       - ./sync-user/target/sync-user-1.0.0-jar-with-dependencies.jar:/opt/keycloak/providers/sync-user-1.0.0-jar-with-dependencies.jar
       - ./plugins/email:/opt/keycloak/themes/base/email
     environment:
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=R9t!2bXz@5zQ#4kF
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=R9t!2bXz@5zQ#4kF
       - KC_DB=postgres
       - KC_DB_URL=jdbc:postgresql://postgres/keycloak?user=postgres&password=postgres
       - KC_HOSTNAME=https://keycloak.openlearnhub.io.vn
