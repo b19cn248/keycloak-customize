@@ -1,5 +1,5 @@
 echo "Stopping and removing containers"
-docker compose down
+docker compose down -v
 
 echo "Packaging risk-base"
 cd risk-base
