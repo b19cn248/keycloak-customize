@@ -2,23 +2,28 @@
 <@layout.registrationLayout displayMessage=!messagesPerField.existsError('username','password') displayInfo=realm.password && realm.registrationAllowed && !registrationDisabled??; section>
     <#if section = "header">
         <div class="olh-news-header">
-            <img src="https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fc8b01f0e-afa7-47f9-8968-2392ad49beab_1024x1024.jpeg" alt="OLH News Logo" class="olh-logo">
-            <span class="olh-title">Sign in to your account</span>
+            <img src="${url.resourcesPath}/img/olh.png" alt="OpenLearnHub Logo" class="olh-logo">
         </div>
     <#elseif section = "form">
         <div id="kc-form" class="olh-form-container">
             <div id="kc-form-wrapper" class="olh-form-wrapper">
+                <h2 class="sign-in-header">SIGN IN</h2>
                 <#if realm.password>
                     <form id="kc-form-login" onsubmit="login.disabled = true; return true;" action="${url.loginAction}" method="post">
                         <#if !usernameHidden??>
                             <div class="${properties.kcFormGroupClass!} olh-form-group">
-                                <label for="username" class="${properties.kcLabelClass!} olh-label"><#if !realm.loginWithEmailAllowed>${msg("username")}<#elseif !realm.registrationEmailAsUsername>${msg("usernameOrEmail")}<#else>${msg("email")}</#if></label>
+                                <label for="username" class="${properties.kcLabelClass!} olh-label">Username</label>
 
-                                <input tabindex="2" id="username" class="${properties.kcInputClass!} olh-input" name="username" value="${(login.username!'')}"  type="text" autofocus autocomplete="username"
-                                       aria-invalid="<#if messagesPerField.existsError('username','password')>true</#if>"
-                                       dir="ltr"
-                                       placeholder="Username or email"
-                                />
+                                <div class="input-group">
+                                    <div class="input-icon">
+                                        <i class="fa fa-user"></i>
+                                    </div>
+                                    <input tabindex="2" id="username" class="${properties.kcInputClass!} olh-input" name="username" value="${(login.username!'')}" type="text" autofocus autocomplete="username"
+                                           aria-invalid="<#if messagesPerField.existsError('username','password')>true</#if>"
+                                           dir="ltr"
+                                           placeholder="Username or email"
+                                    />
+                                </div>
 
                                 <#if messagesPerField.existsError('username','password')>
                                     <span id="input-error" class="${properties.kcInputErrorMessageClass!} olh-error-message" aria-live="polite">
@@ -30,9 +35,12 @@
                         </#if>
 
                         <div class="${properties.kcFormGroupClass!} olh-form-group">
-                            <label for="password" class="${properties.kcLabelClass!} olh-label">${msg("password")}</label>
+                            <label for="password" class="${properties.kcLabelClass!} olh-label">Password</label>
 
-                            <div class="${properties.kcInputGroup!} olh-input-group" dir="ltr">
+                            <div class="input-group">
+                                <div class="input-icon">
+                                    <i class="fa fa-lock"></i>
+                                </div>
                                 <input tabindex="3" id="password" class="${properties.kcInputClass!} olh-input" name="password" type="password" autocomplete="current-password"
                                        aria-invalid="<#if messagesPerField.existsError('username','password')>true</#if>"
                                        placeholder="Password"
@@ -41,7 +49,7 @@
                                         aria-controls="password" data-password-toggle tabindex="4"
                                         data-icon-show="${properties.kcFormPasswordVisibilityIconShow!}" data-icon-hide="${properties.kcFormPasswordVisibilityIconHide!}"
                                         data-label-show="${msg('showPassword')}" data-label-hide="${msg('hidePassword')}">
-                                    <i class="${properties.kcFormPasswordVisibilityIconShow!}" aria-hidden="true"></i>
+                                    <i class="fa fa-eye-slash" aria-hidden="true"></i>
                                 </button>
                             </div>
 
@@ -77,23 +85,24 @@
 
                         <div id="kc-form-buttons" class="${properties.kcFormGroupClass!} olh-form-buttons">
                             <input type="hidden" id="id-hidden-input" name="credentialId" <#if auth.selectedCredential?has_content>value="${auth.selectedCredential}"</#if>/>
-                            <input tabindex="7" class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!} olh-button" name="login" id="kc-login" type="submit" value="${msg("doLogIn")}"/>
+                            <input tabindex="7" class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!} olh-button" name="login" id="kc-login" type="submit" value="SIGN IN"/>
                         </div>
                     </form>
                 </#if>
             </div>
         </div>
         <script type="module" src="${url.resourcesPath}/js/passwordVisibility.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-        <!-- Custom CSS for OLH News login page -->
+        <!-- Custom CSS for OpenLearnHub login page -->
         <style>
             :root {
-                --olh-primary: #0066cc;
-                --olh-primary-dark: #0055aa;
+                --olh-primary: #1976d2;
+                --olh-primary-dark: #115293;
                 --olh-accent: #FF5722;
                 --olh-text: #333333;
                 --olh-text-light: #666666;
-                --olh-background: #f0f2f5;
+                --olh-background: #1565c0;
                 --olh-card-bg: #FFFFFF;
                 --olh-border: #E0E0E0;
                 --olh-success: #4CAF50;
@@ -109,50 +118,51 @@
 
             body {
                 background-color: var(--olh-background);
-                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48cG9seWdvbiBwb2ludHM9IjAsMCAxMDAsMCAxMDAsMTAwIDAsMTAwIiBzdHlsZT0iZmlsbDojZjBmMmY1OyIvPjxwYXRoIGQ9Ik00MCwzMCBMNzAsNzAgTDEwMCw0MCBMMTAwLDEwMCBMMCwxMDAgTDAsNzAgWiIgc3R5bGU9ImZpbGw6I2VhZWRmMjsgc3Ryb2tlLXdpZHRoOjA7IiAvPjxwYXRoIGQ9Ik0wLDQwIEw0MCwxMCBMNzAsMzAgTDMwLDEwMCBMMCwxMDAgWiIgc3R5bGU9ImZpbGw6I2U0ZThmMDsgc3Ryb2tlLXdpZHRoOjA7IiAvPjwvc3ZnPg==');
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48cGF0aCBmaWxsPSIjMTU2NWMwIiBkPSJNMCAwTDEwMCAwIDEwMCAxMDAgMCAxMDB6Ii8+PGc+PGcgZmlsbC1vcGFjaXR5PSIuMSIgZmlsbD0iI2ZmZiI+PGNpcmNsZSBjeD0iMTAiIGN5PSIzNSIgcj0iMyIvPjxjaXJjbGUgY3g9IjQwIiBjeT0iNzAiIHI9IjQiLz48Y2lyY2xlIGN4PSI3MCIgY3k9IjQwIiByPSIyIi8+PGNpcmNsZSBjeD0iOTUiIGN5PSI4NSIgcj0iMyIvPjxwYXRoIGQ9Ik0xNSAyNUw4NSA4NVoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9Ii4yIiBzdHJva2Utd2lkdGg9IjAuNSIvPjxwYXRoIGQ9Ik00MCA4MEw4MCAyMFoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9Ii4yIiBzdHJva2Utd2lkdGg9IjAuNSIvPjwvZz48L2c+PHBhdGggZD0iTTAgMEMxMCAxMCAyMCA1IDMwIDE1QzQwIDI1IDUwIDE1IDYwIDI1QzcwIDM1IDgwIDI1IDkwIDM1QzEwMCA0NSAxMDAgMTAwIDEwMCAxMDBIMFoiIGZpbGw9IiMxMTUyOTMiIGZpbGwtb3BhY2l0eT0iLjMiLz48L3N2Zz4=');
                 background-repeat: no-repeat;
                 background-size: cover;
                 background-position: center;
                 font-family: 'Roboto', Arial, sans-serif;
                 color: var(--olh-text);
                 display: flex;
+                flex-direction: column;
                 justify-content: center;
                 align-items: center;
                 min-height: 100vh;
             }
 
             .olh-news-header {
-                display: flex;
-                align-items: center;
-                justify-content: flex-start;
+                text-align: center;
                 margin-bottom: 1.5rem;
-                padding: 0 1rem;
             }
 
             .olh-logo {
-                height: 32px;
-                margin-right: 12px;
+                height: 40px;
+                filter: brightness(0) invert(1);
             }
 
-            .olh-title {
+            .sign-in-header {
+                color: var(--olh-primary);
+                text-align: center;
                 font-size: 1.5rem;
                 font-weight: 600;
-                color: var(--olh-primary);
+                margin-top: 0;
+                margin-bottom: 2rem;
             }
 
             .olh-form-container {
                 background-color: var(--olh-card-bg);
-                border-radius: 8px;
+                border-radius: 4px;
                 box-shadow: var(--olh-shadow);
-                width: 400px;
+                width: 380px;
                 max-width: 90%;
-                margin: 2rem auto;
+                margin: 0 auto 2rem;
                 overflow: hidden;
+                padding: 2rem;
             }
 
             .olh-form-wrapper {
                 width: 100%;
-                padding: 2rem;
             }
 
             .olh-form-group {
@@ -167,32 +177,48 @@
                 font-size: 0.9rem;
             }
 
+            .input-group {
+                position: relative;
+                display: flex;
+                width: 100%;
+                border: 1px solid var(--olh-border);
+                border-radius: 4px;
+                overflow: hidden;
+            }
+
+            .input-group:focus-within {
+                border-color: var(--olh-primary);
+                box-shadow: 0 0 0 1px var(--olh-primary);
+            }
+
+            .input-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                background-color: #f5f5f5;
+                color: #666;
+                border-right: 1px solid var(--olh-border);
+            }
+
             .olh-input {
                 width: 100%;
                 padding: 0.75rem 1rem;
-                border: 1px solid var(--olh-border);
-                border-radius: 4px;
+                border: none;
                 font-size: 1rem;
-                transition: all 0.2s ease;
-                background-color: #f7f9fc;
-            }
-
-            .olh-input:focus {
-                border-color: var(--olh-primary);
                 outline: none;
-                box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
-                background-color: #fff;
-            }
-
-            .olh-input-group {
-                position: relative;
+                background-color: white;
             }
 
             .olh-visibility-button {
                 position: absolute;
-                right: 10px;
-                top: 50%;
-                transform: translateY(-50%);
+                right: 0;
+                top: 0;
+                height: 100%;
+                width: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 background: none;
                 border: none;
                 color: var(--olh-text-light);
@@ -258,9 +284,9 @@
 
             /* Social providers styling */
             #kc-social-providers {
-                margin-top: 1.5rem;
-                border-top: 1px solid var(--olh-border);
-                padding-top: 1.5rem;
+                margin-top: 1rem;
+                padding-top: 1rem;
+                text-align: center;
             }
 
             #kc-social-providers h2 {
@@ -307,16 +333,22 @@
             /* Registration container styling */
             #kc-registration-container {
                 text-align: center;
-                margin-top: 1.5rem;
-                padding-top: 1.5rem;
-                padding-bottom: 0.5rem;
-                border-top: 1px solid var(--olh-border);
+                margin-top: 1rem;
+                color: white;
                 font-size: 0.9rem;
             }
 
             #kc-registration a {
-                color: var(--olh-primary);
+                color: white;
                 font-weight: 500;
+                text-decoration: underline;
+            }
+
+            .footer-text {
+                text-align: center;
+                color: rgba(255, 255, 255, 0.8);
+                font-size: 0.8rem;
+                margin-top: 2rem;
             }
 
             /* Responsive adjustments */
@@ -327,16 +359,15 @@
                     margin: 0;
                     border-radius: 0;
                     box-shadow: none;
-                    min-height: 100vh;
+                    height: 100vh;
                 }
 
                 .olh-form-wrapper {
-                    padding: 1.5rem;
+                    padding: 0;
                 }
 
                 .olh-news-header {
                     margin-top: 2rem;
-                    justify-content: center;
                 }
 
                 .olh-form-settings {
@@ -353,33 +384,28 @@
         </style>
     <#elseif section = "info" >
         <#if realm.password && realm.registrationAllowed && !registrationDisabled??>
-            <div id="kc-registration-container" class="olh-registration-container">
+            <div id="kc-registration-container">
                 <div id="kc-registration">
-                    <span>${msg("noAccount")} <a tabindex="8" class="olh-link"
+                    <span>${msg("noAccount")} <a tabindex="8"
                                                  href="${url.registrationUrl}">${msg("doRegister")}</a></span>
                 </div>
             </div>
         </#if>
+        <div class="footer-text">
+            Developed by OpenLearnHub
+        </div>
     <#elseif section = "socialProviders" >
-        <#if realm.password && social?? && social.providers?has_content>
+        <#if realm.password>
             <div id="kc-social-providers" class="${properties.kcFormSocialAccountSectionClass!} olh-social-providers">
-                <hr/>
-                <h2>${msg("identity-provider-login-label")}</h2>
+                <h2>Or sign in with</h2>
 
-                <ul class="${properties.kcFormSocialAccountListClass!} <#if social.providers?size gt 3>${properties.kcFormSocialAccountListGridClass!}</#if> olh-social-list">
-                    <#list social.providers as p>
-                        <li>
-                            <a id="social-${p.alias}" class="${properties.kcFormSocialAccountListButtonClass!} <#if social.providers?size gt 3>${properties.kcFormSocialAccountGridItem!}</#if> olh-social-button"
-                               type="button" href="${p.loginUrl}">
-                                <#if p.iconClasses?has_content>
-                                    <i class="${properties.kcCommonLogoIdP!} ${p.iconClasses!} olh-social-icon" aria-hidden="true"></i>
-                                    <span class="${properties.kcFormSocialAccountNameClass!} kc-social-icon-text">${p.displayName!}</span>
-                                <#else>
-                                    <span class="${properties.kcFormSocialAccountNameClass!}">${p.displayName!}</span>
-                                </#if>
-                            </a>
-                        </li>
-                    </#list>
+                <ul class="olh-social-list">
+                    <li>
+                        <a id="social-google" class="olh-social-button" type="button" href="${url.loginUrl}?kc_idp_hint=google">
+                            <i class="fab fa-google olh-social-icon" aria-hidden="true"></i>
+                            <span>Google</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </#if>
