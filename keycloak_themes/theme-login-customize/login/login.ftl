@@ -2,8 +2,8 @@
 <@layout.registrationLayout displayMessage=!messagesPerField.existsError('username','password') displayInfo=realm.password && realm.registrationAllowed && !registrationDisabled??; section>
     <#if section = "header">
         <div class="olh-news-header">
-            <img src="${url.resourcesPath}/img/olh-logo.png" alt="OLH News Logo" class="olh-logo">
-            <span class="olh-title">${msg("loginAccountTitle")}</span>
+            <img src="${url.resourcesPath}/img/olh.png" alt="OLH News Logo" class="olh-logo">
+            <span class="olh-title">Sign in to your account</span>
         </div>
     <#elseif section = "form">
         <div id="kc-form" class="olh-form-container">
@@ -17,7 +17,7 @@
                                 <input tabindex="2" id="username" class="${properties.kcInputClass!} olh-input" name="username" value="${(login.username!'')}"  type="text" autofocus autocomplete="username"
                                        aria-invalid="<#if messagesPerField.existsError('username','password')>true</#if>"
                                        dir="ltr"
-                                       placeholder="Nhập tên đăng nhập"
+                                       placeholder="Username or email"
                                 />
 
                                 <#if messagesPerField.existsError('username','password')>
@@ -35,7 +35,7 @@
                             <div class="${properties.kcInputGroup!} olh-input-group" dir="ltr">
                                 <input tabindex="3" id="password" class="${properties.kcInputClass!} olh-input" name="password" type="password" autocomplete="current-password"
                                        aria-invalid="<#if messagesPerField.existsError('username','password')>true</#if>"
-                                       placeholder="Nhập mật khẩu"
+                                       placeholder="Password"
                                 />
                                 <button class="${properties.kcFormPasswordVisibilityButtonClass!} olh-visibility-button" type="button" aria-label="${msg("showPassword")}"
                                         aria-controls="password" data-password-toggle tabindex="4"
@@ -88,53 +88,71 @@
         <!-- Custom CSS for OLH News login page -->
         <style>
             :root {
-                --olh-primary: #3949AB;
-                --olh-primary-dark: #303F9F;
+                --olh-primary: #0066cc;
+                --olh-primary-dark: #0055aa;
                 --olh-accent: #FF5722;
                 --olh-text: #333333;
                 --olh-text-light: #666666;
-                --olh-background: #F5F5F5;
+                --olh-background: #f0f2f5;
                 --olh-card-bg: #FFFFFF;
                 --olh-border: #E0E0E0;
                 --olh-success: #4CAF50;
                 --olh-error: #F44336;
+                --olh-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
             }
 
             body {
                 background-color: var(--olh-background);
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48cG9seWdvbiBwb2ludHM9IjAsMCAxMDAsMCAxMDAsMTAwIDAsMTAwIiBzdHlsZT0iZmlsbDojZjBmMmY1OyIvPjxwYXRoIGQ9Ik00MCwzMCBMNzAsNzAgTDEwMCw0MCBMMTAwLDEwMCBMMCwxMDAgTDAsNzAgWiIgc3R5bGU9ImZpbGw6I2VhZWRmMjsgc3Ryb2tlLXdpZHRoOjA7IiAvPjxwYXRoIGQ9Ik0wLDQwIEw0MCwxMCBMNzAsMzAgTDMwLDEwMCBMMCwxMDAgWiIgc3R5bGU9ImZpbGw6I2U0ZThmMDsgc3Ryb2tlLXdpZHRoOjA7IiAvPjwvc3ZnPg==');
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-position: center;
                 font-family: 'Roboto', Arial, sans-serif;
                 color: var(--olh-text);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
             }
 
             .olh-news-header {
                 display: flex;
                 align-items: center;
-                justify-content: center;
-                margin-bottom: 2rem;
+                justify-content: flex-start;
+                margin-bottom: 1.5rem;
+                padding: 0 1rem;
             }
 
             .olh-logo {
-                height: 40px;
-                margin-right: 10px;
+                height: 32px;
+                margin-right: 12px;
             }
 
             .olh-title {
-                font-size: 1.8rem;
-                font-weight: bold;
+                font-size: 1.5rem;
+                font-weight: 600;
                 color: var(--olh-primary);
             }
 
             .olh-form-container {
                 background-color: var(--olh-card-bg);
                 border-radius: 8px;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                padding: 2rem;
-                max-width: 450px;
-                margin: 0 auto;
+                box-shadow: var(--olh-shadow);
+                width: 400px;
+                max-width: 90%;
+                margin: 2rem auto;
+                overflow: hidden;
             }
 
             .olh-form-wrapper {
                 width: 100%;
+                padding: 2rem;
             }
 
             .olh-form-group {
@@ -146,6 +164,7 @@
                 margin-bottom: 0.5rem;
                 font-weight: 500;
                 color: var(--olh-text);
+                font-size: 0.9rem;
             }
 
             .olh-input {
@@ -154,13 +173,15 @@
                 border: 1px solid var(--olh-border);
                 border-radius: 4px;
                 font-size: 1rem;
-                transition: border-color 0.3s;
+                transition: all 0.2s ease;
+                background-color: #f7f9fc;
             }
 
             .olh-input:focus {
                 border-color: var(--olh-primary);
                 outline: none;
-                box-shadow: 0 0 0 2px rgba(57, 73, 171, 0.2);
+                box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+                background-color: #fff;
             }
 
             .olh-input-group {
@@ -204,7 +225,8 @@
             .olh-link {
                 color: var(--olh-primary);
                 text-decoration: none;
-                transition: color 0.3s;
+                transition: color 0.2s;
+                font-size: 0.9rem;
             }
 
             .olh-link:hover {
@@ -213,7 +235,7 @@
             }
 
             .olh-form-buttons {
-                margin-top: 2rem;
+                margin-top: 1.5rem;
             }
 
             .olh-button {
@@ -225,8 +247,9 @@
                 font-size: 1rem;
                 font-weight: 500;
                 cursor: pointer;
-                transition: background-color 0.3s;
+                transition: background-color 0.2s;
                 width: 100%;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             }
 
             .olh-button:hover {
@@ -235,29 +258,50 @@
 
             /* Social providers styling */
             #kc-social-providers {
-                margin-top: 2rem;
+                margin-top: 1.5rem;
                 border-top: 1px solid var(--olh-border);
                 padding-top: 1.5rem;
             }
 
             #kc-social-providers h2 {
+                margin-top: 0;
                 margin-bottom: 1rem;
-                font-size: 1.25rem;
-                color: var(--olh-text);
+                font-size: 1rem;
+                color: var(--olh-text-light);
                 text-align: center;
             }
 
-            .kc-social-links {
+            .olh-social-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
                 display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 1rem;
+                flex-direction: column;
+                gap: 0.75rem;
             }
 
-            .kc-social-provider-logo {
-                width: 24px;
-                height: 24px;
+            .olh-social-button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0.75rem 1rem;
+                border: 1px solid var(--olh-border);
+                border-radius: 4px;
+                text-decoration: none;
+                color: var(--olh-text);
+                transition: all 0.2s;
+                background-color: #fff;
+                font-size: 0.9rem;
+            }
+
+            .olh-social-button:hover {
+                background-color: #f5f7fa;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            }
+
+            .olh-social-icon {
                 margin-right: 0.5rem;
+                font-size: 1.2rem;
             }
 
             /* Registration container styling */
@@ -265,7 +309,9 @@
                 text-align: center;
                 margin-top: 1.5rem;
                 padding-top: 1.5rem;
+                padding-bottom: 0.5rem;
                 border-top: 1px solid var(--olh-border);
+                font-size: 0.9rem;
             }
 
             #kc-registration a {
@@ -274,19 +320,34 @@
             }
 
             /* Responsive adjustments */
-            @media (max-width: 768px) {
+            @media (max-width: 480px) {
                 .olh-form-container {
+                    width: 100%;
+                    max-width: 100%;
+                    margin: 0;
+                    border-radius: 0;
+                    box-shadow: none;
+                    min-height: 100vh;
+                }
+
+                .olh-form-wrapper {
                     padding: 1.5rem;
-                    margin: 0 1rem;
+                }
+
+                .olh-news-header {
+                    margin-top: 2rem;
+                    justify-content: center;
                 }
 
                 .olh-form-settings {
                     flex-direction: column;
                     align-items: flex-start;
+                    gap: 0.75rem;
                 }
 
-                .olh-reset-password {
-                    margin-top: 1rem;
+                body {
+                    background-image: none;
+                    display: block;
                 }
             }
         </style>
