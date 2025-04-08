@@ -2,7 +2,7 @@
 <@layout.registrationLayout displayMessage=!messagesPerField.existsError('username','password') displayInfo=realm.password && realm.registrationAllowed && !registrationDisabled??; section>
     <#if section = "header">
         <div class="olh-news-header">
-            <img src="${url.resourcesPath}/img/olh.png" alt="OpenLearnHub Logo" class="olh-logo">
+            <img src="https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fc8b01f0e-afa7-47f9-8968-2392ad49beab_1024x1024.jpeg" alt="OpenLearnHub Logo" class="olh-logo">
         </div>
     <#elseif section = "form">
         <div id="kc-form" class="olh-form-container">
