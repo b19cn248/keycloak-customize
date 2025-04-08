@@ -1,4 +1,4 @@
-<#import "template.ftl" as layout>
+<#import "template-v1.ftl" as layout>
 <@layout.registrationLayout displayMessage=!messagesPerField.existsError('username','password') displayInfo=realm.password && realm.registrationAllowed && !registrationDisabled??; section>
     <#if section = "header">
         <div class="olh-news-header">
@@ -92,7 +92,6 @@
             </div>
         </div>
         <script type="module" src="${url.resourcesPath}/js/passwordVisibility.js"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
         <!-- Custom CSS for OpenLearnHub login page -->
         <style>
@@ -108,27 +107,6 @@
                 --olh-success: #4CAF50;
                 --olh-error: #F44336;
                 --olh-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            }
-
-            html, body {
-                height: 100%;
-                margin: 0;
-                padding: 0;
-            }
-
-            body {
-                background-color: var(--olh-background);
-                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48cGF0aCBmaWxsPSIjMTU2NWMwIiBkPSJNMCAwTDEwMCAwIDEwMCAxMDAgMCAxMDB6Ii8+PGc+PGcgZmlsbC1vcGFjaXR5PSIuMSIgZmlsbD0iI2ZmZiI+PGNpcmNsZSBjeD0iMTAiIGN5PSIzNSIgcj0iMyIvPjxjaXJjbGUgY3g9IjQwIiBjeT0iNzAiIHI9IjQiLz48Y2lyY2xlIGN4PSI3MCIgY3k9IjQwIiByPSIyIi8+PGNpcmNsZSBjeD0iOTUiIGN5PSI4NSIgcj0iMyIvPjxwYXRoIGQ9Ik0xNSAyNUw4NSA4NVoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9Ii4yIiBzdHJva2Utd2lkdGg9IjAuNSIvPjxwYXRoIGQ9Ik00MCA4MEw4MCAyMFoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9Ii4yIiBzdHJva2Utd2lkdGg9IjAuNSIvPjwvZz48L2c+PHBhdGggZD0iTTAgMEMxMCAxMCAyMCA1IDMwIDE1QzQwIDI1IDUwIDE1IDYwIDI1QzcwIDM1IDgwIDI1IDkwIDM1QzEwMCA0NSAxMDAgMTAwIDEwMCAxMDBIMFoiIGZpbGw9IiMxMTUyOTMiIGZpbGwtb3BhY2l0eT0iLjMiLz48L3N2Zz4=');
-                background-repeat: no-repeat;
-                background-size: cover;
-                background-position: center;
-                font-family: 'Roboto', Arial, sans-serif;
-                color: var(--olh-text);
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                min-height: 100vh;
             }
 
             .olh-news-header {
@@ -293,7 +271,7 @@
                 margin-top: 0;
                 margin-bottom: 1rem;
                 font-size: 1rem;
-                color: var(--olh-text-light);
+                color: white;
                 text-align: center;
             }
 
@@ -301,9 +279,6 @@
                 list-style: none;
                 padding: 0;
                 margin: 0;
-                display: flex;
-                flex-direction: column;
-                gap: 0.75rem;
             }
 
             .olh-social-button {
@@ -311,18 +286,19 @@
                 align-items: center;
                 justify-content: center;
                 padding: 0.75rem 1rem;
-                border: 1px solid var(--olh-border);
+                border: none;
                 border-radius: 4px;
                 text-decoration: none;
                 color: var(--olh-text);
                 transition: all 0.2s;
                 background-color: #fff;
                 font-size: 0.9rem;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
             }
 
             .olh-social-button:hover {
                 background-color: #f5f7fa;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
             }
 
             .olh-social-icon {
@@ -342,13 +318,6 @@
                 color: white;
                 font-weight: 500;
                 text-decoration: underline;
-            }
-
-            .footer-text {
-                text-align: center;
-                color: rgba(255, 255, 255, 0.8);
-                font-size: 0.8rem;
-                margin-top: 2rem;
             }
 
             /* Responsive adjustments */
@@ -375,11 +344,6 @@
                     align-items: flex-start;
                     gap: 0.75rem;
                 }
-
-                body {
-                    background-image: none;
-                    display: block;
-                }
             }
         </style>
     <#elseif section = "info" >
@@ -391,9 +355,6 @@
                 </div>
             </div>
         </#if>
-        <div class="footer-text">
-            Developed by OpenLearnHub
-        </div>
     <#elseif section = "socialProviders" >
         <#if realm.password>
             <div id="kc-social-providers" class="${properties.kcFormSocialAccountSectionClass!} olh-social-providers">
