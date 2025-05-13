@@ -17,7 +17,7 @@ public class DatabaseConnector {
     public static Connection getConnection() throws SQLException {
         Connection connection = null;
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://mysql_db:3306/smart_feed",
+            connection = DriverManager.getConnection("jdbc:mysql://smart-feeds-mysql:3306/smart_feed",
                     "root", "root");
             logger.info("Connection to database successful");
         } catch (Exception e) {
