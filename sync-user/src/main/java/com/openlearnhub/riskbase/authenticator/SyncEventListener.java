@@ -9,7 +9,9 @@ import org.keycloak.models.UserModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -29,10 +31,7 @@ public class SyncEventListener implements EventListenerProvider {
     public void onEvent(Event event) {
         // Xử lý cả sự kiện đăng ký và đăng nhập qua Google
         if (event.getType() == EventType.REGISTER ||
-                (event.getType() == EventType.IDENTITY_PROVIDER_LOGIN &&
-                        event.getDetails() != null &&
-                        event.getDetails().containsKey("identity_provider") &&
-                        "google".equals(event.getDetails().get("identity_provider")))) {
+                (event.getType() == EventType.IDENTITY_PROVIDER_LOGIN)) {
 
             String userId = event.getUserId();
 
