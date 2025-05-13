@@ -6,21 +6,12 @@ services:
     volumes:
       - ./keycloak_themes:/opt/keycloak/themes
       - ./plugins/keycloak-2fa-email-authenticator-1.0.0.0-SNAPSHOT.jar:/opt/keycloak/providers/keycloak-2fa-email-authenticator-1.0.0.0-SNAPSHOT.jar
-      - ./risk-base/target/risk-base-1.0.0.jar:/opt/keycloak/providers/risk-base-1.0.0.jar
-      - ./risk-base/target/risk-base-1.0.0-jar-with-dependencies.jar:/opt/keycloak/providers/risk-base-1.0.0-jar-with-dependencies.jar
-      - ./user-information/target/user-information-1.0.0.jar:/opt/keycloak/providers/user-information-1.0.0.jar
-      - ./user-information/target/user-information-1.0.0-jar-with-dependencies.jar:/opt/keycloak/providers/user-information-1.0.0-jar-with-dependencies.jar
       - ./sync-user/target/sync-user-1.0.0.jar:/opt/keycloak/providers/sync-user-1.0.0.jar
       - ./sync-user/target/sync-user-1.0.0-jar-with-dependencies.jar:/opt/keycloak/providers/sync-user-1.0.0-jar-with-dependencies.jar
       - ./plugins/email:/opt/keycloak/themes/base/email
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=R9t!2bXz@5zQ#4kF
-      - KC_DB=postgres
-      - KC_DB_URL=jdbc:postgresql://postgres/keycloak?user=postgres&password=postgres
-      - KC_HOSTNAME=keycloak.openlearnhub.io.vn
-      - PROXY_ADDRESS_FORWARDING=true
-      - KC_PROXY=edge
     command:
       - start-dev
     ports:

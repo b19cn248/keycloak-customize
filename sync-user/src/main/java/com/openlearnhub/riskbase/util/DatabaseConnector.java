@@ -17,9 +17,8 @@ public class DatabaseConnector {
     public static Connection getConnection() throws SQLException {
         Connection connection = null;
         try {
-            connection = DriverManager.getConnection("jdbc:postgresql:/postgres/shop_sport?currentSchema=user_service",
-                    "postgres", "postgres");
-
+            connection = DriverManager.getConnection("jdbc:mysql://mysql_db:3306/smart_feed",
+                    "root", "root");
             logger.info("Connection to database successful");
         } catch (Exception e) {
             logger.error("Database connection error: ", e);

@@ -1,0 +1,3 @@
+com\openlearnhub\riskbase\util\DatabaseConnector.class
+com\openlearnhub\riskbase\authenticator\SyncEventListener.class
+com\openlearnhub\riskbase\authenticator\SyncEventListenerFactory.class
