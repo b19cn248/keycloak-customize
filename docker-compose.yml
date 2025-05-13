@@ -12,6 +12,9 @@ services:
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=R9t!2bXz@5zQ#4kF
+      - KC_HOSTNAME=keycloak.openlearnhub.io.vn
+      - PROXY_ADDRESS_FORWARDING=true
+      - KC_PROXY=edge
     command:
       - start-dev
     ports:
