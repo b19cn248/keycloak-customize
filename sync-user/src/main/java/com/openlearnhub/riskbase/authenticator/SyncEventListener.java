@@ -9,14 +9,15 @@ import org.keycloak.models.UserModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.Timestamp;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class SyncEventListener implements EventListenerProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(SyncEventListener.class);
+    private static final String USER_API_URL = "https://smart.feeds.api.openlearnhub.io.vn/api/v1/users";
 
     private final KeycloakSession session;
 
@@ -26,12 +27,28 @@ public class SyncEventListener implements EventListenerProvider {
 
     @Override
     public void onEvent(Event event) {
-        // Chỉ xử lý sự kiện đăng ký (REGISTER)
-        if (event.getType() == EventType.REGISTER) {
+        // Xử lý cả sự kiện đăng ký và đăng nhập qua Google
+        if (event.getType() == EventType.REGISTER ||
+                (event.getType() == EventType.IDENTITY_PROVIDER_LOGIN &&
+                        event.getDetails() != null &&
+                        event.getDetails().containsKey("identity_provider") &&
+                        "google".equals(event.getDetails().get("identity_provider")))) {
+
+            String userId = event.getUserId();
+
             try {
-                // Lấy UserModel dựa trên userId từ sự kiện
-                String userId = event.getUserId();
+                // Kiểm tra user đã tồn tại bằng keycloakId
+                if (userExistsByKeycloakId(userId)) {
+                    logger.info("User with keycloakId {} already exists in database", userId);
+                    return;
+                }
+
+                // Lấy UserModel từ userId trong sự kiện
                 UserModel user = session.users().getUserById(session.getContext().getRealm(), userId);
+                if (user == null) {
+                    logger.error("Unable to find user with id {}", userId);
+                    return;
+                }
 
                 // Lấy thông tin từ UserModel
                 String email = user.getEmail();
@@ -40,40 +57,96 @@ public class SyncEventListener implements EventListenerProvider {
                         (user.getLastName() != null ? " " + user.getLastName() : "");
                 name = name.trim();
 
-                // Kết nối tới MySQL database
-                String url = "jdbc:mysql://mysql_db:3306/smart_feed";
-                String dbUser = "root";
-                String dbPassword = "root";
+                // Tạo payload JSON cho API
+                String jsonPayload = createJsonPayload(userId, email, username, name);
 
-                try (Connection conn = DriverManager.getConnection(url, dbUser, dbPassword)) {
-                    // SQL insert phù hợp với cấu trúc bảng mới
-                    String sql = "INSERT INTO users (email , name, username, created_at, updated_at, " +
-                            "created_by, updated_by, is_deleted, points, settings_id, read_later_list_id, subscription_id) " +
-                            "VALUES (?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                // Gọi API để tạo user
+                boolean success = callCreateUserApi(jsonPayload);
 
-                    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                if (success) {
+                    logger.info("Successfully synced user {} to database via API", userId);
+                }
 
-                        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-                        stmt.setString(1, email); // email
-                        stmt.setString(2, name); // name - kết hợp firstName và lastName
-                        stmt.setString(3, username); // username
-                        stmt.setTimestamp(4, currentTime); // created_at
-                        stmt.setTimestamp(5, currentTime); // updated_at
-                        stmt.setString(6, "KEYCLOAK"); // created_by
-                        stmt.setString(7, "KEYCLOAK"); // updated_by
-                        stmt.setInt(8, 0); // is_deleted - 0 = false
-                        stmt.setLong(9, 0); // points - default 0
-                        stmt.setLong(10, 1L); // settings_id = 1
-                        stmt.setLong(11, 1L); // read_later_list_id = 1
-                        stmt.setLong(12, 1L); // subscription_id = 1
+            } catch (Exception e) {
+                logger.error("Error while syncing user to database: ", e);
+            }
+        }
+    }
 
-                        stmt.executeUpdate();
-                        logger.info("Successfully synced user {} to MySQL database", userId);
+    private boolean userExistsByKeycloakId(String keycloakId) {
+        try {
+            URL url = new URL(USER_API_URL + "/exists/keycloak?keycloakId=" + keycloakId);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+
+            int responseCode = conn.getResponseCode();
+
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                try (BufferedReader br = new BufferedReader(
+                        new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+                    String response = br.readLine();
+                    return "true".equals(response);
+                }
+            }
+
+            return false;
+        } catch (Exception e) {
+            logger.error("Error checking if user exists by keycloakId: ", e);
+            return false;
+        }
+    }
+
+    private String createJsonPayload(String keycloakId, String email, String username, String name) {
+        return "{"
+                + "\"email\":\"" + email + "\","
+                + "\"username\":\"" + username + "\","
+                + "\"name\":\"" + name + "\","
+                + "\"points\":0,"
+                + "\"keycloakId\":\"" + keycloakId + "\","
+                + "\"settingsId\":1,"
+                + "\"readLaterListId\":1,"
+                + "\"subscriptionId\":1,"
+                + "\"createdBy\":\"KEYCLOAK\","
+                + "\"updatedBy\":\"KEYCLOAK\""
+                + "}";
+    }
+
+    private boolean callCreateUserApi(String jsonPayload) {
+        try {
+            URL url = new URL(USER_API_URL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setDoOutput(true);
+
+            try (OutputStream os = conn.getOutputStream()) {
+                byte[] input = jsonPayload.getBytes(StandardCharsets.UTF_8);
+                os.write(input, 0, input.length);
+            }
+
+            int responseCode = conn.getResponseCode();
+
+            if (responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_OK) {
+                return true;
+            } else {
+                StringBuilder response = new StringBuilder();
+                try (BufferedReader br = new BufferedReader(
+                        new InputStreamReader(conn.getErrorStream(), StandardCharsets.UTF_8))) {
+                    String responseLine;
+                    while ((responseLine = br.readLine()) != null) {
+                        response.append(responseLine.trim());
                     }
                 }
-            } catch (Exception e) {
-                logger.error("Error while syncing user to MySQL database: ", e);
+
+                logger.error("Failed to create user via API. Response code: {}, Response: {}",
+                        responseCode, response.toString());
+                return false;
             }
+        } catch (Exception e) {
+            logger.error("Error calling create user API: ", e);
+            return false;
         }
     }
 
