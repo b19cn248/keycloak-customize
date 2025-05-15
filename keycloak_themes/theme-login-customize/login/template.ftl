@@ -1,161 +1,191 @@
 <#macro registrationLayout bodyClass="" displayInfo=false displayMessage=true displayRequiredFields=false>
-<!DOCTYPE html>
-<html class="${properties.kcHtmlClass!}"<#if realm.internationalizationEnabled> lang="${locale.currentLanguageTag}"</#if>>
+    <!DOCTYPE html>
+    <html class="${properties.kcHtmlClass!}" lang="${lang}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${msg("loginTitle",(realm.displayName!''))}</title>
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="robots" content="noindex, nofollow">
-    <meta name="gitlab-dast-validation" content="725047a2-e8a6-41f7-b33a-77479efc9d5c">
+        <style>
+            :root {
+                --primary-color: #1a73e8;
+                --secondary-color: #f8f9fa;
+                --text-color: #202124;
+                --border-color: #dadce0;
+                --focus-color: #1a73e8;
+                --error-color: #d93025;
+            }
 
-    <#if properties.meta?has_content>
-        <#list properties.meta?split(' ') as meta>
-            <meta name="${meta?split('==')[0]}" content="${meta?split('==')[1]}"/>
-        </#list>
-    </#if>
-    <title>${msg("loginTitle",(realm.displayName!''))}</title>
-    <#if properties.stylesCommon?has_content>
-        <#list properties.stylesCommon?split(' ') as style>
-            <link href="${url.resourcesCommonPath}/${style}" rel="stylesheet" />
-        </#list>
-    </#if>
-    <#if properties.styles?has_content>
-        <#list properties.styles?split(' ') as style>
-            <link href="${url.resourcesPath}/${style}" rel="stylesheet" />
-        </#list>
-    </#if>
-    <#if properties.scripts?has_content>
-        <#list properties.scripts?split(' ') as script>
-            <script src="${url.resourcesPath}/${script}" type="text/javascript"></script>
-        </#list>
-    </#if>
-    <#if scripts??>
-        <#list scripts as script>
-            <script src="${script}" type="text/javascript"></script>
-        </#list>
-    </#if>
-    <#if authenticationSession??>
-        <script type="module">
-            import { checkCookiesAndSetTimer } from "${url.resourcesPath}/js/authChecker.js";
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                min-height: 100vh;
+                background-color: #f8f9fa;
+                color: var(--text-color);
+            }
 
-            checkCookiesAndSetTimer(
-              "${authenticationSession.authSessionId}",
-              "${authenticationSession.tabId}",
-              "${url.ssoLoginInOtherTabsUrl}"
-            );
-        </script>
-    </#if>
-</head>
+            .login-container {
+                max-width: 420px;
+                margin: auto;
+                padding: 40px 30px;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            }
 
-<body class="${properties.kcBodyClass!}">
-<div class="${properties.kcLoginClass!}">
-    <div id="kc-header" class="${properties.kcHeaderClass!}">
-        <div id="kc-header-wrapper-partner-portal"
-             class="${properties.kcHeaderWrapperClass!}">
-            <#if client.clientId??>
-                <#if client.clientId == "partnerapp-web" || client.clientId == "partnerapp-web-admin">
-                    ${msg("appNamePartnerPortal")}
-                <#elseif client.clientId == "exchange-contract-web">
-                    ${msg("appNameExchangeContract")}
-                <#else>
-                    ${msg("appName")}
-                </#if>
-            <#else>
-                ${msg("appName")}
-            </#if>
-        </div>
-    </div>
-    <div class="${properties.kcFormCardClass!}">
-        <header class="${properties.kcFormHeaderClass!}">
-        <#if !(auth?has_content && auth.showUsername() && !auth.showResetCredentials())>
-            <#if displayRequiredFields>
-                <div class="${properties.kcContentWrapperClass!}">
-                    <div class="${properties.kcLabelWrapperClass!} subtitle">
-                        <span class="subtitle"><span class="required">*</span> ${msg("requiredFields")}</span>
-                    </div>
-                    <div class="col-md-10">
-                        <h1 id="kc-page-title"><#nested "header"></h1>
-                    </div>
-                </div>
-            <#else>
-                <h1 id="kc-page-title"><#nested "header"></h1>
-            </#if>
-        <#else>
-            <#if displayRequiredFields>
-                <div class="${properties.kcContentWrapperClass!}">
-                    <div class="${properties.kcLabelWrapperClass!} subtitle">
-                        <span class="subtitle"><span class="required">*</span> ${msg("requiredFields")}</span>
-                    </div>
-                    <div class="col-md-10">
-                        <#nested "show-username">
-                        <div id="kc-username" class="${properties.kcFormGroupClass!}">
-                            <label id="kc-attempted-username">${auth.attemptedUsername}</label>
-                            <a id="reset-login" href="${url.loginRestartFlowUrl}" aria-label="${msg("restartLoginTooltip")}">
-                                <div class="kc-login-tooltip">
-                                    <i class="${properties.kcResetFlowIcon!}"></i>
-                                    <span class="kc-tooltip-text">${msg("restartLoginTooltip")}</span>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            <#else>
-                <#nested "show-username">
-                <div id="kc-username" class="${properties.kcFormGroupClass!}">
-                    <label id="kc-attempted-username">${auth.attemptedUsername}</label>
-                    <a id="reset-login" href="${url.loginRestartFlowUrl}" aria-label="${msg("restartLoginTooltip")}">
-                        <div class="kc-login-tooltip">
-                            <i class="${properties.kcResetFlowIcon!}"></i>
-                            <span class="kc-tooltip-text">${msg("restartLoginTooltip")}</span>
-                        </div>
-                    </a>
-                </div>
-            </#if>
+            .smart-feeds-logo {
+                text-align: center;
+                margin-bottom: 30px;
+            }
+
+            .smart-feeds-logo h1 {
+                font-size: 24px;
+                font-weight: 500;
+                color: var(--primary-color);
+                margin: 0;
+            }
+
+            .form-group {
+                margin-bottom: 24px;
+            }
+
+            label {
+                display: block;
+                margin-bottom: 8px;
+                font-size: 14px;
+                font-weight: 500;
+            }
+
+            input[type="text"],
+            input[type="password"],
+            input[type="email"] {
+                width: 100%;
+                padding: 12px 16px;
+                font-size: 16px;
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+                box-sizing: border-box;
+                transition: border-color 0.2s;
+            }
+
+            input:focus {
+                outline: none;
+                border-color: var(--focus-color);
+                box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+            }
+
+            .btn {
+                display: block;
+                width: 100%;
+                padding: 12px 16px;
+                background-color: var(--primary-color);
+                color: white;
+                border: none;
+                border-radius: 4px;
+                font-size: 16px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: background-color 0.2s;
+            }
+
+            .btn:hover {
+                background-color: #0d65d9;
+            }
+
+            .text-center {
+                text-align: center;
+            }
+
+            .text-link {
+                color: var(--primary-color);
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+            .text-link:hover {
+                text-decoration: underline;
+            }
+
+            .alert {
+                padding: 12px 16px;
+                margin-bottom: 20px;
+                border-radius: 4px;
+                border-left: 4px solid;
+            }
+
+            .alert-error {
+                background-color: #fce8e6;
+                border-left-color: var(--error-color);
+                color: var(--error-color);
+            }
+
+            .alert-success {
+                background-color: #e6f4ea;
+                border-left-color: #0f9d58;
+                color: #0f9d58;
+            }
+
+            .form-footer {
+                margin-top: 24px;
+                font-size: 14px;
+                text-align: center;
+            }
+
+            .form-header {
+                margin-bottom: 32px;
+                text-align: center;
+            }
+
+            .form-header h2 {
+                font-size: 24px;
+                font-weight: 500;
+                margin: 0;
+                color: var(--text-color);
+            }
+
+            @media (max-width: 480px) {
+                .login-container {
+                    max-width: 100%;
+                    box-shadow: none;
+                    border-radius: 0;
+                }
+            }
+        </style>
+
+        <!-- Các script được import từ Keycloak -->
+        <#if properties.scripts?has_content>
+            <#list properties.scripts?split(' ') as script>
+                <script src="${url.resourcesPath}/${script}" type="text/javascript"></script>
+            </#list>
         </#if>
-      </header>
-      <div id="kc-content">
-        <div id="kc-content-wrapper">
+    </head>
 
-          <#-- App-initiated actions should not see warning messages about the need to complete the action -->
-          <#-- during login.                                                                               -->
-          <#if displayMessage && message?has_content && (message.type != 'warning' || !isAppInitiatedAction??)>
-              <div class="alert-${message.type} ${properties.kcAlertClass!} pf-m-<#if message.type = 'error'>danger<#else>${message.type}</#if>">
-                  <div class="pf-c-alert__icon">
-                      <#if message.type = 'success'><span class="${properties.kcFeedbackSuccessIcon!}"></span></#if>
-                      <#if message.type = 'warning'><span class="${properties.kcFeedbackWarningIcon!}"></span></#if>
-                      <#if message.type = 'error'><span class="${properties.kcFeedbackErrorIcon!}"></span></#if>
-                      <#if message.type = 'info'><span class="${properties.kcFeedbackInfoIcon!}"></span></#if>
-                  </div>
-                      <span class="${properties.kcAlertTitleClass!}">${kcSanitize(message.summary)?no_esc}</span>
-              </div>
-          </#if>
-
-          <#nested "form">
-
-          <#if auth?has_content && auth.showTryAnotherWayLink()>
-              <form id="kc-select-try-another-way-form" action="${url.loginAction}" method="post">
-                  <div class="${properties.kcFormGroupClass!}">
-                      <input type="hidden" name="tryAnotherWay" value="on"/>
-                      <a href="#" id="try-another-way"
-                         onclick="document.forms['kc-select-try-another-way-form'].submit();return false;">${msg("doTryAnotherWay")}</a>
-                  </div>
-              </form>
-          </#if>
-
-          <#nested "socialProviders">
-
-          <#if displayInfo>
-              <div id="kc-info" class="${properties.kcSignUpClass!}">
-                  <div id="kc-info-wrapper" class="${properties.kcInfoAreaWrapperClass!}">
-                      <#nested "info">
-                  </div>
-              </div>
-          </#if>
+    <body>
+    <div class="login-container" role="main">
+        <div class="smart-feeds-logo">
+            <h1>Smart Feeds</h1>
         </div>
-      </div>
 
+        <div class="form-header">
+            <h2><#nested "header"></h2>
+        </div>
+
+        <#if displayMessage && message?has_content && (message.type != 'warning' || !isAppInitiatedAction??)>
+            <div class="alert alert-${message.type}">
+                ${kcSanitize(message.summary)?no_esc}
+            </div>
+        </#if>
+
+        <#nested "form">
+
+        <#if displayInfo>
+            <div class="form-footer">
+                <#nested "info">
+            </div>
+        </#if>
     </div>
-  </div>
-</body>
-</html>
+    </body>
+    </html>
 </#macro>
