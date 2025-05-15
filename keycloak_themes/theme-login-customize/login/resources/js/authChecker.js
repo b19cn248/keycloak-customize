@@ -73,3 +73,21 @@ function getCookieByName(name) {
 
   return cookies.get(name) ?? null;
 }
+
+const togglePassword = (button) => {
+  const passwordElement = document.getElementById(button.getAttribute('aria-controls'));
+  if (passwordElement.type === "password") {
+    passwordElement.type = "text";
+    button.querySelector('i').classList.replace("fa-eye", "fa-eye-slash");
+    button.setAttribute("aria-label", button.dataset.labelHide);
+  } else if(passwordElement.type === "text") {
+    passwordElement.type = "password";
+    button.querySelector('i').classList.replace("fa-eye-slash", "fa-eye");
+    button.setAttribute("aria-label", button.dataset.labelShow);
+  }
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('[data-password-toggle]')
+      .forEach(button => button.addEventListener('click', () => togglePassword(button)));
+});
