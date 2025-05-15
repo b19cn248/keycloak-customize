@@ -1,10 +1,20 @@
 <#macro registrationLayout bodyClass="" displayInfo=false displayMessage=true displayRequiredFields=false>
     <!DOCTYPE html>
-    <html class="${properties.kcHtmlClass!}" lang="${lang}">
+    <html class="${properties.kcHtmlClass!}" lang="${lang}"<#if realm.internationalizationEnabled> dir="${(locale.rtl)?then('rtl','ltr')}"</#if>>
+
     <head>
         <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="robots" content="noindex, nofollow">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <#if properties.meta?has_content>
+            <#list properties.meta?split(' ') as meta>
+                <meta name="${meta?split('==')[0]}" content="${meta?split('==')[1]}"/>
+            </#list>
+        </#if>
         <title>${msg("loginTitle",(realm.displayName!''))}</title>
+        <link rel="icon" href="${url.resourcesPath}/img/favicon.ico" />
 
         <style>
             :root {
@@ -14,6 +24,10 @@
                 --border-color: #dadce0;
                 --focus-color: #1a73e8;
                 --error-color: #d93025;
+            }
+
+            * {
+                box-sizing: border-box;
             }
 
             body {
@@ -33,6 +47,7 @@
                 background: white;
                 border-radius: 8px;
                 box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+                width: 100%;
             }
 
             .smart-feeds-logo {
@@ -41,10 +56,22 @@
             }
 
             .smart-feeds-logo h1 {
-                font-size: 24px;
+                font-size: 28px;
                 font-weight: 500;
                 color: var(--primary-color);
                 margin: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .smart-feeds-logo h1::before {
+                content: "";
+                display: inline-block;
+                width: 24px;
+                height: 24px;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%231a73e8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 11a9 9 0 0 1 9 9'%3E%3C/path%3E%3Cpath d='M4 4a16 16 0 0 1 16 16'%3E%3C/path%3E%3Ccircle cx='5' cy='19' r='1'%3E%3C/circle%3E%3C/svg%3E");
+                margin-right: 10px;
             }
 
             .form-group {
@@ -56,6 +83,16 @@
                 margin-bottom: 8px;
                 font-size: 14px;
                 font-weight: 500;
+            }
+
+            .label-with-link {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .float-right {
+                font-size: 14px;
             }
 
             input[type="text"],
@@ -113,6 +150,7 @@
                 margin-bottom: 20px;
                 border-radius: 4px;
                 border-left: 4px solid;
+                font-size: 14px;
             }
 
             .alert-error {
@@ -125,6 +163,18 @@
                 background-color: #e6f4ea;
                 border-left-color: #0f9d58;
                 color: #0f9d58;
+            }
+
+            .alert-warning {
+                background-color: #fff8e1;
+                border-left-color: #f9a825;
+                color: #996500;
+            }
+
+            .alert-info {
+                background-color: #e8f0fe;
+                border-left-color: #1a73e8;
+                color: #174ea6;
             }
 
             .form-footer {
@@ -145,21 +195,85 @@
                 color: var(--text-color);
             }
 
+            .checkbox-group {
+                display: flex;
+                align-items: center;
+            }
+
+            .checkbox-label {
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+                font-size: 14px;
+            }
+
+            .checkbox-label input {
+                margin-right: 8px;
+            }
+
+            .error-message {
+                color: var(--error-color);
+                font-size: 12px;
+                margin-top: 4px;
+                display: block;
+            }
+
+            .required {
+                color: var(--error-color);
+                margin-left: 4px;
+            }
+
+            .instruction {
+                font-size: 14px;
+                margin-bottom: 24px;
+                color: #5f6368;
+            }
+
             @media (max-width: 480px) {
                 .login-container {
                     max-width: 100%;
                     box-shadow: none;
                     border-radius: 0;
+                    padding: 24px 16px;
+                }
+
+                body {
+                    background-color: white;
                 }
             }
         </style>
 
-        <!-- Các script được import từ Keycloak -->
+        <#if properties.stylesCommon?has_content>
+            <#list properties.stylesCommon?split(' ') as style>
+                <link href="${url.resourcesCommonPath}/${style}" rel="stylesheet" />
+            </#list>
+        </#if>
+        <#if properties.styles?has_content>
+            <#list properties.styles?split(' ') as style>
+                <link href="${url.resourcesPath}/${style}" rel="stylesheet" />
+            </#list>
+        </#if>
         <#if properties.scripts?has_content>
             <#list properties.scripts?split(' ') as script>
                 <script src="${url.resourcesPath}/${script}" type="text/javascript"></script>
             </#list>
         </#if>
+        <script type="importmap">
+            {
+                "imports": {
+                    "rfc4648": "${url.resourcesCommonPath}/vendor/rfc4648/rfc4648.js"
+            }
+        }
+        </script>
+        <#if scripts??>
+            <#list scripts as script>
+                <script src="${script}" type="text/javascript"></script>
+            </#list>
+        </#if>
+        <script type="module">
+            import { startSessionPolling } from "${url.resourcesPath}/js/authChecker.js";
+            startSessionPolling("${url.ssoLoginInOtherTabsUrl?no_esc}");
+        </script>
     </head>
 
     <body>
