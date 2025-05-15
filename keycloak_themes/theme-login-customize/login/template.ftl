@@ -1,10 +1,10 @@
 <#macro registrationLayout bodyClass="" displayInfo=false displayMessage=true displayRequiredFields=false>
     <!DOCTYPE html>
-    <html class="${properties.kcHtmlClass!}" lang="${lang}"<#if realm.internationalizationEnabled> dir="${(locale.rtl)?then('rtl','ltr')}"</#if>>
-
+    <html class="${properties.kcHtmlClass!}"
+          lang="${lang!'en'}"<#if realm.internationalizationEnabled> dir="${(locale.rtl)?then('rtl','ltr')}"</#if>>
     <head>
         <meta charset="utf-8">
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="robots" content="noindex, nofollow">
         <meta name="color-scheme" content="light${darkMode?then(' dark', '')}">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,19 +15,19 @@
             </#list>
         </#if>
         <title>${msg("loginTitle",(realm.displayName!'Smart Feeds'))}</title>
-        <link rel="icon" href="${url.resourcesPath}/img/favicon.ico" />
+        <link rel="icon" href="${url.resourcesPath}/img/favicon.ico"/>
         <#if properties.stylesCommon?has_content>
             <#list properties.stylesCommon?split(' ') as style>
-                <link href="${url.resourcesCommonPath}/${style}" rel="stylesheet" />
+                <link href="${url.resourcesCommonPath}/${style}" rel="stylesheet"/>
             </#list>
         </#if>
         <#if properties.styles?has_content>
             <#list properties.styles?split(' ') as style>
-                <link href="${url.resourcesPath}/${style}" rel="stylesheet" />
+                <link href="${url.resourcesPath}/${style}" rel="stylesheet"/>
             </#list>
         </#if>
         <!-- Custom Smart Feeds styles -->
-        <link href="${url.resourcesPath}/css/smartfeeds-auth.css" rel="stylesheet" />
+        <link href="${url.resourcesPath}/css/smartfeeds-auth.css" rel="stylesheet"/>
 
         <#if darkMode>
             <script type="module" async blocking="render">
@@ -38,7 +38,7 @@
                 mediaQuery.addEventListener("change", (event) => updateDarkMode(event.matches));
 
                 function updateDarkMode(isEnabled) {
-                    const { classList } = document.documentElement;
+                    const {classList} = document.documentElement;
 
                     if (isEnabled) {
                         classList.add(DARK_MODE_CLASS);
@@ -65,11 +65,13 @@
         <div class="${properties.kcLoginContainer!} smartfeeds-auth-container">
             <header id="kc-header" class="smartfeeds-auth-header">
                 <div class="smartfeeds-logo-wrapper">
-                    <img src="${url.resourcesPath}/img/keycloak-logo-text.svg" alt="Smart Feeds" class="smartfeeds-logo">
+                    <img src="${url.resourcesPath}/img/keycloak-logo-text.svg" alt="Smart Feeds"
+                         class="smartfeeds-logo">
                 </div>
                 <div class="smartfeeds-theme-toggle">
                     <button id="theme-toggle" class="smartfeeds-theme-button" aria-label="Toggle dark mode">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
                         </svg>
                     </button>
@@ -80,8 +82,10 @@
                 <#if displayMessage && message?has_content && (message.type != 'warning' || !isAppInitiatedAction??)>
                     <div class="smartfeeds-alert ${properties.kcAlertClass!} pf-m-${(message.type = 'error')?then('danger', message.type)}">
                         <div class="${properties.kcAlertIconClass!}">
-                            <#if message.type = 'success'><span class="${properties.kcFeedbackSuccessIcon!}"></span></#if>
-                            <#if message.type = 'warning'><span class="${properties.kcFeedbackWarningIcon!}"></span></#if>
+                            <#if message.type = 'success'><span
+                                class="${properties.kcFeedbackSuccessIcon!}"></span></#if>
+                            <#if message.type = 'warning'><span
+                                class="${properties.kcFeedbackWarningIcon!}"></span></#if>
                             <#if message.type = 'error'><span class="${properties.kcFeedbackErrorIcon!}"></span></#if>
                             <#if message.type = 'info'><span class="${properties.kcFeedbackInfoIcon!}"></span></#if>
                         </div>
@@ -117,7 +121,7 @@
 
     <script>
         // Dark mode toggle functionality
-        document.getElementById('theme-toggle').addEventListener('click', function() {
+        document.getElementById('theme-toggle').addEventListener('click', function () {
             document.documentElement.classList.toggle('pf-v5-theme-dark');
         });
     </script>
