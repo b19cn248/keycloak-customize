@@ -1,10 +1,11 @@
 <#macro registrationLayout bodyClass="" displayInfo=false displayMessage=true displayRequiredFields=false>
     <!DOCTYPE html>
-    <html class="${properties.kcHtmlClass!}" lang="${lang}"<#if realm.internationalizationEnabled> dir="${(locale.rtl)?then('rtl','ltr')}"</#if>>
 
+    <html class="${properties.kcHtmlClass!}"
+          lang="${locale.currentLanguageTag!'vi'}"<#if realm.internationalizationEnabled> dir="${(locale.rtl)?then('rtl','ltr')}"</#if>>
     <head>
         <meta charset="utf-8">
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="robots" content="noindex, nofollow">
         <meta name="color-scheme" content="light${darkMode?then(' dark', '')}">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,18 +18,18 @@
             </#list>
         </#if>
         <title>Smart Feeds | ${msg("loginTitle",(realm.displayName!''))}</title>
-        <link rel="icon" href="${url.resourcesPath}/img/favicon.ico" />
+        <link rel="icon" href="${url.resourcesPath}/img/favicon.ico"/>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
         <#if properties.stylesCommon?has_content>
             <#list properties.stylesCommon?split(' ') as style>
-                <link href="${url.resourcesCommonPath}/${style}" rel="stylesheet" />
+                <link href="${url.resourcesCommonPath}/${style}" rel="stylesheet"/>
             </#list>
         </#if>
         <#if properties.styles?has_content>
             <#list properties.styles?split(' ') as style>
-                <link href="${url.resourcesPath}/${style}" rel="stylesheet" />
+                <link href="${url.resourcesPath}/${style}" rel="stylesheet"/>
             </#list>
         </#if>
         <script type="importmap">
@@ -47,7 +48,7 @@
                 mediaQuery.addEventListener("change", (event) => updateDarkMode(event.matches));
 
                 function updateDarkMode(isEnabled) {
-                    const { classList } = document.documentElement;
+                    const {classList} = document.documentElement;
 
                     if (isEnabled) {
                         classList.add(DARK_MODE_CLASS);
@@ -70,7 +71,7 @@
         <script type="module" src="${url.resourcesPath}/js/passwordVisibility.js"></script>
         <script type="module" src="${url.resourcesPath}/js/custom.js"></script>
         <script type="module">
-            import { startSessionPolling } from "${url.resourcesPath}/js/authChecker.js";
+            import {startSessionPolling} from "${url.resourcesPath}/js/authChecker.js";
 
             startSessionPolling(
                 "${url.ssoLoginInOtherTabsUrl?no_esc}"
@@ -89,7 +90,7 @@
                     return;
                 }
 
-                const { disabledClass } = link.dataset;
+                const {disabledClass} = link.dataset;
 
                 if (disabledClass) {
                     link.classList.add(...disabledClass.trim().split(/\s+/));
@@ -101,7 +102,7 @@
         </script>
         <#if authenticationSession??>
             <script type="module">
-                import { checkAuthSession } from "${url.resourcesPath}/js/authChecker.js";
+                import {checkAuthSession} from "${url.resourcesPath}/js/authChecker.js";
 
                 checkAuthSession(
                     "${authenticationSession.authSessionIdHash}"
@@ -115,7 +116,8 @@
         <div class="${properties.kcLoginContainer!} custom-card-shadow">
             <header id="kc-header" class="pf-v5-c-login__header">
                 <div id="kc-header-wrapper"
-                     class="pf-v5-c-brand">Smart Feeds</div>
+                     class="pf-v5-c-brand">Smart Feeds
+                </div>
             </header>
             <main class="${properties.kcLoginMain!}">
                 <div class="${properties.kcLoginMainHeader!}">
@@ -196,9 +198,12 @@
                     <#if displayMessage && message?has_content && (message.type != 'warning' || !isAppInitiatedAction??)>
                         <div class="${properties.kcAlertClass!} pf-m-${(message.type = 'error')?then('danger', message.type)}">
                             <div class="${properties.kcAlertIconClass!}">
-                                <#if message.type = 'success'><span class="${properties.kcFeedbackSuccessIcon!}"></span></#if>
-                                <#if message.type = 'warning'><span class="${properties.kcFeedbackWarningIcon!}"></span></#if>
-                                <#if message.type = 'error'><span class="${properties.kcFeedbackErrorIcon!}"></span></#if>
+                                <#if message.type = 'success'><span
+                                    class="${properties.kcFeedbackSuccessIcon!}"></span></#if>
+                                <#if message.type = 'warning'><span
+                                    class="${properties.kcFeedbackWarningIcon!}"></span></#if>
+                                <#if message.type = 'error'><span
+                                    class="${properties.kcFeedbackErrorIcon!}"></span></#if>
                                 <#if message.type = 'info'><span class="${properties.kcFeedbackInfoIcon!}"></span></#if>
                             </div>
                             <span class="${properties.kcAlertTitleClass!} kc-feedback-text">${kcSanitize(message.summary)?no_esc}</span>
@@ -208,9 +213,11 @@
                     <#nested "form">
 
                     <#if auth?has_content && auth.showTryAnotherWayLink()>
-                        <form id="kc-select-try-another-way-form" action="${url.loginAction}" method="post" novalidate="novalidate">
+                        <form id="kc-select-try-another-way-form" action="${url.loginAction}" method="post"
+                              novalidate="novalidate">
                             <input type="hidden" name="tryAnotherWay" value="on"/>
-                            <a id="try-another-way" href="javascript:document.forms['kc-select-try-another-way-form'].requestSubmit()"
+                            <a id="try-another-way"
+                               href="javascript:document.forms['kc-select-try-another-way-form'].requestSubmit()"
                                class="${properties.kcButtonSecondaryClass} ${properties.kcButtonBlockClass} ${properties.kcMarginTopClass}">
                                 ${kcSanitize(msg("doTryAnotherWay"))?no_esc}
                             </a>
