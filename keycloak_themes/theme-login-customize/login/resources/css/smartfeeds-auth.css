@@ -1,0 +1,205 @@
+/* SmartFeeds Auth Styles */
+:root {
+    --smartfeeds-primary: #007bff;
+    --smartfeeds-secondary: #6c757d;
+    --smartfeeds-success: #28a745;
+    --smartfeeds-danger: #dc3545;
+    --smartfeeds-text: #212529;
+    --smartfeeds-bg: #f8f9fa;
+    --smartfeeds-card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --smartfeeds-card-bg: #ffffff;
+    --smartfeeds-input-border: #ced4da;
+}
+
+/* Dark theme variables */
+.pf-v5-theme-dark {
+    --smartfeeds-text: #e9ecef;
+    --smartfeeds-bg: #343a40;
+    --smartfeeds-card-bg: #212529;
+    --smartfeeds-card-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --smartfeeds-input-border: #495057;
+}
+
+body.smartfeeds-auth-body {
+    background-color: var(--smartfeeds-bg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+.smartfeeds-auth-container {
+    max-width: 450px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.smartfeeds-auth-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.smartfeeds-logo {
+    height: 40px;
+}
+
+.smartfeeds-auth-card {
+    background-color: var(--smartfeeds-card-bg);
+    border-radius: 8px;
+    box-shadow: var(--smartfeeds-card-shadow);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.smartfeeds-form-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.smartfeeds-form-icon {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: rgba(0, 123, 255, 0.1);
+    color: var(--smartfeeds-primary);
+    margin-bottom: 1rem;
+}
+
+.smartfeeds-form-title {
+    font-size: 1.5rem;
+    color: var(--smartfeeds-text);
+    margin-bottom: 0.5rem;
+}
+
+.smartfeeds-form-subtitle {
+    color: var(--smartfeeds-secondary);
+    margin-bottom: 0;
+}
+
+/* Form controls */
+.pf-v5-c-form-control {
+    border-radius: 4px;
+    border: 1px solid var(--smartfeeds-input-border);
+    padding: 0.6rem 0.8rem;
+    width: 100%;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.pf-v5-c-form-control:focus {
+    border-color: var(--smartfeeds-primary);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Buttons */
+.smartfeeds-primary-btn {
+    display: inline-block;
+    font-weight: 500;
+    color: #fff;
+    background-color: var(--smartfeeds-primary);
+    border: 1px solid var(--smartfeeds-primary);
+    border-radius: 4px;
+    padding: 0.6rem 1rem;
+    width: 100%;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.smartfeeds-primary-btn:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+
+.smartfeeds-link {
+    color: var(--smartfeeds-primary);
+    text-decoration: none;
+}
+
+.smartfeeds-link:hover {
+    text-decoration: underline;
+}
+
+.smartfeeds-divider {
+    display: flex;
+    align-items: center;
+    margin: 1.5rem 0;
+    color: var(--smartfeeds-secondary);
+}
+
+.smartfeeds-divider:before,
+.smartfeeds-divider:after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid var(--smartfeeds-input-border);
+}
+
+.smartfeeds-divider span {
+    padding: 0 1rem;
+}
+
+.smartfeeds-footer {
+    text-align: center;
+    color: var(--smartfeeds-secondary);
+    margin-top: 1.5rem;
+    font-size: 0.875rem;
+}
+
+.smartfeeds-social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--smartfeeds-input-border);
+    background: var(--smartfeeds-card-bg);
+    color: var(--smartfeeds-text);
+    border-radius: 4px;
+    padding: 0.6rem 1rem;
+    margin-bottom: 0.75rem;
+    transition: all 0.15s;
+}
+
+.smartfeeds-social-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.smartfeeds-social-btn svg {
+    margin-right: 0.5rem;
+}
+
+.smartfeeds-info-box {
+    background-color: rgba(0, 123, 255, 0.05);
+    border-left: 4px solid var(--smartfeeds-primary);
+    padding: 1rem;
+    margin: 1.5rem 0;
+    color: var(--smartfeeds-text);
+    border-radius: 4px;
+}
+
+/* Password requirements */
+.smartfeeds-password-requirements {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 4px;
+}
+
+.smartfeeds-password-requirements h3 {
+    font-size: 0.9rem;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: var(--smartfeeds-text);
+}
+
+.smartfeeds-password-requirements ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--smartfeeds-secondary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .smartfeeds-auth-card {
+        padding: 1.5rem;
+    }
+}
