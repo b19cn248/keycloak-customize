@@ -2,7 +2,7 @@ version: '2'
 
 services:
   keycloak:
-    image: quay.io/keycloak/keycloak:23.0.1
+    image: quay.io/keycloak/keycloak:26.2.0
     volumes:
       - ./keycloak_themes:/opt/keycloak/themes
       - ./plugins/keycloak-2fa-email-authenticator-1.0.0.0-SNAPSHOT.jar:/opt/keycloak/providers/keycloak-2fa-email-authenticator-1.0.0.0-SNAPSHOT.jar
