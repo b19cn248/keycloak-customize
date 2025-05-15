@@ -1,51 +1,45 @@
 <#import "template.ftl" as layout>
 <#import "password-commons.ftl" as passwordCommons>
 <@layout.registrationLayout; section>
-<!-- template: login-recovery-authn-code-config.ftl -->
+
 <#if section = "header">
     ${msg("recovery-code-config-header")}
 <#elseif section = "form">
     <!-- warning -->
-    <div class="${properties.kcRecoveryCodesWarning!}" aria-label="Warning alert">
-        <div class="${properties.kcAlertIconClass!}">
-            <i class="fas fa-fw fa-bell" aria-hidden="true"></i>
+    <div class="pf-c-alert pf-m-warning pf-m-inline ${properties.kcRecoveryCodesWarning!}" aria-label="Warning alert">
+        <div class="pf-c-alert__icon">
+            <i class="pficon-warning-triangle-o" aria-hidden="true"></i>
         </div>
-        <h4 class="${properties.kcAlertTitleClass!}">
+        <h4 class="pf-c-alert__title">
             <span class="pf-screen-reader">Warning alert:</span>
             ${msg("recovery-code-config-warning-title")}
         </h4>
-        <div class="${properties.kcAlertDescriptionClass!}">
+        <div class="pf-c-alert__description">
             <p>${msg("recovery-code-config-warning-message")}</p>
         </div>
     </div>
 
-    <div class="${properties.kcPanelClass!}">
-        <div class="${properties.kcPanelMainClass!}">
-            <div class="${properties.kcPanelMainBodyClass!}">
-            <ol id="kc-recovery-codes-list" class="${properties.kcListClass!}" role="list">
-                <#list recoveryAuthnCodesConfigBean.generatedRecoveryAuthnCodesList as code>
-                    <li>${code[0..3]}-${code[4..7]}-${code[8..]}</li>
-                </#list>
-            </ol>
-            </div>
-        </div>
-    </div>
+    <ol id="kc-recovery-codes-list" class="${properties.kcRecoveryCodesList!}">
+        <#list recoveryAuthnCodesConfigBean.generatedRecoveryAuthnCodesList as code>
+            <li><span>${code?counter}:</span> ${code[0..3]}-${code[4..7]}-${code[8..]}</li>
+        </#list>
+    </ol>
 
     <!-- actions -->
     <div class="${properties.kcRecoveryCodesActions!}">
-        <button id="printRecoveryCodes" class="${properties.kcButtonLinkClass}" type="button" onclick="printRecoveryCodes()">
-            <i class="fas fa-print"></i> ${msg("recovery-codes-print")}
+        <button id="printRecoveryCodes" class="pf-c-button pf-m-link" type="button">
+            <i class="pficon-print"></i> ${msg("recovery-codes-print")}
         </button>
-        <button id="downloadRecoveryCodes" class="${properties.kcButtonLinkClass}" type="button" onclick="downloadRecoveryCodes()">
-            <i class="fas fa-download"></i> ${msg("recovery-codes-download")}
+        <button id="downloadRecoveryCodes" class="pf-c-button pf-m-link" type="button">
+            <i class="pficon-save"></i> ${msg("recovery-codes-download")}
         </button>
-        <button id="copyRecoveryCodes" class="${properties.kcButtonLinkClass}" type="button" onclick="copyRecoveryCodes()">
-            <i class="fas fa-copy"></i> ${msg("recovery-codes-copy")}
+        <button id="copyRecoveryCodes" class="pf-c-button pf-m-link" type="button">
+            <i class="pficon-blueprint"></i> ${msg("recovery-codes-copy")}
         </button>
     </div>
 
     <!-- confirmation checkbox -->
-    <div class="${properties.kcFormOptionsClass!} pf-v5-u-mt-md">
+    <div class="${properties.kcFormOptionsClass!}">
         <input class="${properties.kcCheckInputClass!}" type="checkbox" id="kcRecoveryCodesConfirmationCheck" name="kcRecoveryCodesConfirmationCheck"
         onchange="document.getElementById('saveRecoveryAuthnCodesBtn').disabled = !this.checked;"
         />
@@ -65,8 +59,8 @@
             disabled
             />
             <button type="submit"
-                class="${properties.kcButtonClass!} ${properties.kcButtonDefaultClass!} ${properties.kcButtonLargeClass!} pf-m-link"
-                id="cancelRecoveryAuthnCodesBtn" name="cancel-aia" value="true">${msg("recovery-codes-action-cancel")}
+                class="${properties.kcButtonClass!} ${properties.kcButtonDefaultClass!} ${properties.kcButtonLargeClass!} ${properties.kcButtonLargeClass!}"
+                id="cancelRecoveryAuthnCodesBtn" name="cancel-aia" value="true" />${msg("recovery-codes-action-cancel")}
             </button>
         <#else>
             <input type="submit"
@@ -80,18 +74,26 @@
     <script>
         /* copy recovery codes  */
         function copyRecoveryCodes() {
-            const tmpTextarea = document.createElement("textarea");
-            tmpTextarea.innerHTML = parseRecoveryCodeList();
+            var tmpTextarea = document.createElement("textarea");
+            var codes = document.querySelectorAll("#kc-recovery-codes-list li");
+            for (i = 0; i < codes.length; i++) {
+                tmpTextarea.value = tmpTextarea.value + codes[i].innerText + "\n";
+            }
             document.body.appendChild(tmpTextarea);
             tmpTextarea.select();
             document.execCommand("copy");
             document.body.removeChild(tmpTextarea);
         }
 
+        var copyButton = document.getElementById("copyRecoveryCodes");
+        copyButton && copyButton.addEventListener("click", function () {
+            copyRecoveryCodes();
+        });
+
         /* download recovery codes  */
         function formatCurrentDateTime() {
-            const dt = new Date();
-            const options = {
+            var dt = new Date();
+            var options = {
                 month: 'long',
                 day: 'numeric',
                 year: 'numeric',
@@ -104,23 +106,21 @@
         }
 
         function parseRecoveryCodeList() {
-            const recoveryCodes = document.getElementById("kc-recovery-codes-list").getElementsByTagName("li");
-            let recoveryCodeList = "";
+            var recoveryCodes = document.querySelectorAll("#kc-recovery-codes-list li");
+            var recoveryCodeList = "";
 
-            for (let i = 0; i < recoveryCodes.length; i++) {
-                const recoveryCodeLiElement = recoveryCodes[i].innerText;
-                <#noparse>
-                recoveryCodeList += `${i+1}: ${recoveryCodeLiElement}\r\n`;
-                </#noparse>
+            for (var i = 0; i < recoveryCodes.length; i++) {
+                var recoveryCodeLiElement = recoveryCodes[i].innerText;
+                recoveryCodeList += recoveryCodeLiElement + "\r\n";
             }
 
             return recoveryCodeList;
         }
 
         function buildDownloadContent() {
-            const recoveryCodeList = parseRecoveryCodeList();
-            const dt = new Date();
-            const options = {
+            var recoveryCodeList = parseRecoveryCodeList();
+            var dt = new Date();
+            var options = {
                 month: 'long',
                 day: 'numeric',
                 year: 'numeric',
@@ -137,7 +137,7 @@
         }
 
         function setUpDownloadLinkAndDownload(filename, text) {
-            const el = document.createElement('a');
+            var el = document.createElement('a');
             el.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
             el.setAttribute('download', filename);
             el.style.display = 'none';
@@ -150,13 +150,16 @@
             setUpDownloadLinkAndDownload('kc-download-recovery-codes.txt', buildDownloadContent());
         }
 
+        var downloadButton = document.getElementById("downloadRecoveryCodes");
+        downloadButton && downloadButton.addEventListener("click", downloadRecoveryCodes);
+
         /* print recovery codes */
         function buildPrintContent() {
-            const recoveryCodeListHTML = document.getElementById('kc-recovery-codes-list').parentNode.innerHTML;
-            const styles =
+            var recoveryCodeListHTML = document.getElementById('kc-recovery-codes-list').innerHTML;
+            var styles =
                 `@page { size: auto;  margin-top: 0; }
                 body { width: 480px; }
-                div { font-family: monospace }
+                div { list-style-type: none; font-family: monospace }
                 p:first-of-type { margin-top: 48px }`;
 
             return printFileContent =
@@ -170,11 +173,14 @@
         }
 
         function printRecoveryCodes() {
-            const w = window.open();
+            var w = window.open();
             w.document.write(buildPrintContent());
             w.print();
             w.close();
         }
+
+        var printButton = document.getElementById("printRecoveryCodes");
+        printButton && printButton.addEventListener("click", printRecoveryCodes);
     </script>
 </#if>
 </@layout.registrationLayout>

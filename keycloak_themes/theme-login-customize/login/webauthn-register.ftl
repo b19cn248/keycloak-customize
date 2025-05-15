@@ -1,6 +1,5 @@
 <#import "template.ftl" as layout>
 <#import "password-commons.ftl" as passwordCommons>
-<#import "buttons.ftl" as buttons>
 
 <@layout.registrationLayout; section>
     <#if section = "title">
@@ -9,8 +8,8 @@
         <span class="${properties.kcWebAuthnKeyIcon!}"></span>
         ${kcSanitize(msg("webauthn-registration-title"))?no_esc}
     <#elseif section = "form">
-    <div class="${properties.kcFormClass!}">
-        <form id="register" action="${url.loginAction}" method="post" >
+
+        <form id="register" class="${properties.kcFormClass!}" action="${url.loginAction}" method="post">
             <div class="${properties.kcFormGroupClass!}">
                 <input type="hidden" id="clientDataJSON" name="clientDataJSON"/>
                 <input type="hidden" id="attestationObject" name="attestationObject"/>
@@ -47,15 +46,19 @@
             });
         </script>
 
-            <@buttons.actionGroup horizontal=true>
-                <@buttons.button id="registerWebAuthn" label="doRegisterSecurityKey" class=["kcButtonPrimaryClass","kcButtonBlockClass"]/>
-                <#if !isSetRetry?has_content && isAppInitiatedAction?has_content>
-                    <form class="${properties.kcFormClass!}" action="${url.loginAction}"
-                          id="kc-webauthn-settings-form" method="post">
-                        <@buttons.button id="cancelWebAuthnAIA" name="cancel-aia" label="doCancel" class=["kcButtonSecondaryClass","kcButtonBlockClass"]/>
-                    </form>
-                </#if>
-            </@buttons.actionGroup>
-    </div>
+        <input type="submit"
+               class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!}"
+               id="registerWebAuthn" value="${msg("doRegisterSecurityKey")}"/>
+
+        <#if !isSetRetry?has_content && isAppInitiatedAction?has_content>
+            <form action="${url.loginAction}" class="${properties.kcFormClass!}" id="kc-webauthn-settings-form"
+                  method="post">
+                <button type="submit"
+                        class="${properties.kcButtonClass!} ${properties.kcButtonDefaultClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!}"
+                        id="cancelWebAuthnAIA" name="cancel-aia" value="true">${msg("doCancel")}
+                </button>
+            </form>
+        </#if>
+
     </#if>
 </@layout.registrationLayout>
