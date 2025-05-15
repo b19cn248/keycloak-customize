@@ -1,13 +1,14 @@
 <#macro registrationLayout bodyClass="" displayInfo=false displayMessage=true displayRequiredFields=false>
     <!DOCTYPE html>
-
     <html class="${properties.kcHtmlClass!}"
-          lang="${locale.currentLanguageTag!'vi'}"<#if realm.internationalizationEnabled> dir="${(locale.rtl)?then('rtl','ltr')}"</#if>>
+          lang="${(locale.currentLanguageTag)!'vi'}"
+          dir="${((locale.rtl?? && locale.rtl)?string('rtl','ltr'))}">
+
     <head>
         <meta charset="utf-8">
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="robots" content="noindex, nofollow">
-        <meta name="color-scheme" content="light${darkMode?then(' dark', '')}">
+        <meta name="color-scheme" content="light${(darkMode?? && darkMode)?then(' dark', '')}">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Đăng nhập hệ thống tin tức">
         <meta name="theme-color" content="#0D47A1">
@@ -18,10 +19,12 @@
             </#list>
         </#if>
         <title>Smart Feeds | ${msg("loginTitle",(realm.displayName!''))}</title>
-        <link rel="icon" href="${url.resourcesPath}/img/favicon.ico"/>
+        <link rel="icon" href="${url.resourcesPath}/img/favicon.ico" />
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+        <!-- Phần còn lại của file -->
         <#if properties.stylesCommon?has_content>
             <#list properties.stylesCommon?split(' ') as style>
                 <link href="${url.resourcesCommonPath}/${style}" rel="stylesheet"/>
