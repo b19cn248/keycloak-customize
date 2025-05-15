@@ -1,59 +1,81 @@
 <#import "template.ftl" as layout>
+<#import "field.ftl" as field>
+<#import "buttons.ftl" as buttons>
+<#import "social-providers.ftl" as identityProviders>
+
 <@layout.registrationLayout displayMessage=!messagesPerField.existsError('username','password') displayInfo=realm.password && realm.registrationAllowed && !registrationDisabled??; section>
+    <!-- template: login.ftl -->
+
     <#if section = "header">
         ${msg("loginAccountTitle")}
     <#elseif section = "form">
-        <form id="kc-form-login" onsubmit="login.disabled = true; return true;" action="${url.loginAction}" method="post">
-            <div class="form-group">
-                <label for="username">
-                    <#if !realm.loginWithEmailAllowed>${msg("username")}<#elseif !realm.registrationEmailAsUsername>${msg("usernameOrEmail")}<#else>${msg("email")}</#if>
-                </label>
-                <div class="input-wrapper">
-                    <i class="fas fa-user"></i>
-                    <input tabindex="1" id="username" name="username" value="${(login.username!'')}" type="text" autofocus autocomplete="username"
-                           aria-invalid="<#if messagesPerField.existsError('username','password')>true</#if>"/>
-                </div>
+        <div id="kc-form">
+            <div id="kc-form-wrapper">
+                <#if realm.password>
+                    <div class="smartfeeds-form-header">
+                        <div class="smartfeeds-form-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <h2 class="smartfeeds-form-title">${msg("loginAccountTitle")}</h2>
+                        <p class="smartfeeds-form-subtitle">Đăng nhập để truy cập tin tức của bạn</p>
+                    </div>
 
-                <#if messagesPerField.existsError('username','password')>
-                    <span class="error-message">${kcSanitize(messagesPerField.getFirstError('username','password'))?no_esc}</span>
+                    <form id="kc-form-login" class="${properties.kcFormClass!}" onsubmit="login.disabled = true; return true;" action="${url.loginAction}" method="post" novalidate="novalidate">
+                        <#if !usernameHidden??>
+                            <#assign label>
+                                <#if !realm.loginWithEmailAllowed>${msg("username")}<#elseif !realm.registrationEmailAsUsername>${msg("usernameOrEmail")}<#else>${msg("email")}</#if>
+                            </#assign>
+                            <@field.input name="username" label=label error=kcSanitize(messagesPerField.getFirstError('username','password'))?no_esc autofocus=true autocomplete="username" value=login.username!'' />
+                            <@field.password name="password" label=msg("password") error="" forgotPassword=realm.resetPasswordAllowed autofocus=usernameHidden?? autocomplete="current-password">
+                                <#if realm.rememberMe && !usernameHidden??>
+                                    <@field.checkbox name="rememberMe" label=msg("rememberMe") value=login.rememberMe?? />
+                                </#if>
+                            </@field.password>
+                        <#else>
+                            <@field.password name="password" label=msg("password") forgotPassword=realm.resetPasswordAllowed autofocus=usernameHidden?? autocomplete="current-password">
+                                <#if realm.rememberMe && !usernameHidden??>
+                                    <@field.checkbox name="rememberMe" label=msg("rememberMe") value=login.rememberMe?? />
+                                </#if>
+                            </@field.password>
+                        </#if>
+
+                        <input type="hidden" id="id-hidden-input" name="credentialId" <#if auth.selectedCredential?has_content>value="${auth.selectedCredential}"</#if>/>
+
+                        <div class="smartfeeds-form-actions">
+                            <button class="smartfeeds-primary-btn" name="login" id="kc-login" type="submit">
+                                ${msg("doLogIn")}
+                            </button>
+                        </div>
+                    </form>
                 </#if>
             </div>
-
-            <div class="form-group">
-                <div class="label-with-link">
-                    <label for="password">${msg("password")}</label>
-                    <#if realm.resetPasswordAllowed>
-                        <a class="text-link float-right" tabindex="5" href="${url.loginResetCredentialsUrl}">${msg("doForgotPassword")}</a>
-                    </#if>
-                </div>
-                <div class="input-wrapper">
-                    <i class="fas fa-lock"></i>
-                    <input tabindex="2" id="password" name="password" type="password" autocomplete="current-password"
-                           aria-invalid="<#if messagesPerField.existsError('username','password')>true</#if>"/>
-                    <button type="button" class="password-toggle"><i class="fas fa-eye"></i></button>
-                </div>
+        </div>
+    <#elseif section = "socialProviders" >
+        <#if realm.password && social.providers?? && social.providers?has_content>
+            <div class="smartfeeds-divider">
+                <span>${msg("or")}</span>
             </div>
 
-            <#if realm.rememberMe && !usernameHidden??>
-                <div class="form-group checkbox-group">
-                    <label class="checkbox-label">
-                        <input tabindex="3" id="rememberMe" name="rememberMe" type="checkbox" <#if login.rememberMe??>checked</#if>>
-                        <span>${msg("rememberMe")}</span>
-                    </label>
-                </div>
-            </#if>
-
-            <div class="form-group">
-                <button tabindex="4" name="login" id="kc-login" type="submit" class="btn">
-                    <i class="fas fa-sign-in-alt"></i> ${msg("doLogIn")}
-                </button>
+            <div id="kc-social-providers" class="smartfeeds-social-providers">
+                <#list social.providers as p>
+                    <a href="${p.loginUrl}" id="social-${p.alias}" class="smartfeeds-social-btn">
+                        <#if p.iconClasses?has_content>
+                            <i class="${p.iconClasses!}"></i>
+                        </#if>
+                        <span>${p.displayName!}</span>
+                    </a>
+                </#list>
             </div>
-        </form>
-    <#elseif section = "info">
+        </#if>
+    <#elseif section = "info" >
         <#if realm.password && realm.registrationAllowed && !registrationDisabled??>
-            <div class="form-footer">
-                ${msg("noAccount")} <a class="text-link" tabindex="6" href="${url.registrationUrl}">${msg("doRegister")}</a>
+            <div id="kc-registration-container" class="smartfeeds-registration">
+                <span>${msg("noAccount")} <a href="${url.registrationUrl}" class="smartfeeds-link">${msg("doRegister")}</a></span>
             </div>
         </#if>
     </#if>
+
 </@layout.registrationLayout>
