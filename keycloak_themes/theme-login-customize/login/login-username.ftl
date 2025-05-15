@@ -1,85 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f9f9f9;
-            font-family: 'Arial', sans-serif;
-        }
+<#import "template.ftl" as layout>
+<#import "field.ftl" as field>
+<#import "buttons.ftl" as buttons>
+<#import "social-providers.ftl" as identityProviders>
+<@layout.registrationLayout displayMessage=!messagesPerField.existsError('username') displayInfo=(realm.password && realm.registrationAllowed && !registrationDisabled??); section>
+<!-- template: login-username.ftl -->
 
-        .login-container {
-            text-align: center;
-        }
+    <#if section = "header">
+        ${msg("loginAccountTitle")}
+    <#elseif section = "form">
+        <div id="kc-form">
+            <div id="kc-form-wrapper">
+                <#if realm.password>
+                    <form id="kc-form-login" class="${properties.kcFormClass!}" onsubmit="login.disabled = true; return true;" action="${url.loginAction}"
+                          method="post">
+                        <#if !usernameHidden??>
+                            <div class="${properties.kcFormGroupClass!}">
+                                <#assign label>
+                                    <#if !realm.loginWithEmailAllowed>${msg("username")}<#elseif !realm.registrationEmailAsUsername>${msg("usernameOrEmail")}<#else>${msg("email")}</#if>
+                                </#assign>
+                                <@field.input name="username" label=label value=login.username!'' autofocus=true autocomplete="username" />
+                            </div>
+                        </#if>
 
-        .logo {
-            margin-bottom: 50px;
-        }
+                        <div class="${properties.kcFormGroupClass!}">
+                            <#if realm.rememberMe && !usernameHidden??>
+                                <@field.checkbox name="rememberMe" label=msg("rememberMe") value=login.rememberMe?? />
+                            </#if>
+                        </div>
 
-        input[type="text"] {
-            width: 300px;
-            padding: 10px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
+                        <@buttons.loginButton />
+                    </form>
+                </#if>
+            </div>
+        </div>
 
-        button {
-            padding: 10px 20px;
-            background-color: white;
-            color: #333;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
+    <#elseif section = "info" >
+        <#if realm.password && realm.registrationAllowed && !registrationDisabled??>
+            <div id="kc-registration">
+                <span>${msg("noAccount")} <a href="${url.registrationUrl}">${msg("doRegister")}</a></span>
+            </div>
+        </#if>
+    <#elseif section = "socialProviders" >
+        <#if realm.password && social.providers?? && social.providers?has_content>
+            <@identityProviders.show social=social />
+        </#if>
+    </#if>
 
-        button:hover {
-            background-color: #f0f0f0;
-        }
-
-        .reset-password {
-            margin-top: 20px;
-        }
-
-        .reset-password a {
-            color: #4CAF50;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .reset-password a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
-
-<div class="login-container">
-    <div class="logo">
-        <img src="${url.resourcesPath}/img/logo.png" alt="Logo" />
-    </div>
-
-    <form action="${url.loginAction}" method="post">
-        <input id="username" name="username" type="text" placeholder="メールアドレス" autofocus="true" required>
-        <button type="submit">ログイン</button>
-    </form>
-
-    <!-- Reset password link -->
-    <div class="reset-password">
-        <a href="${url.loginResetCredentialsUrl}">パスワードをお忘れですか?</a> <!-- "Forgot your password?" in Japanese -->
-    </div>
-</div>
-
-</body>
-</html>
+</@layout.registrationLayout>

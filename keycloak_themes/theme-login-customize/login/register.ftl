@@ -1,76 +1,68 @@
 <#import "template.ftl" as layout>
+<#import "field.ftl" as field>
 <#import "user-profile-commons.ftl" as userProfileCommons>
+<#import "register-commons.ftl" as registerCommons>
+<#import "password-validation.ftl" as validator>
 <@layout.registrationLayout displayMessage=messagesPerField.exists('global') displayRequiredFields=true; section>
+<!-- template: register.ftl -->
+
     <#if section = "header">
-        ${msg("registerTitle")}
+        <#if messageHeader??>
+            ${kcSanitize(msg("${messageHeader}"))?no_esc}
+        <#else>
+            ${msg("registerTitle")}
+        </#if>
     <#elseif section = "form">
-        <form id="kc-register-form" action="${url.registrationAction}" method="post">
-            <!-- User Profile Fields -->
-            <div class="form-group">
-                <label for="firstName">${msg("firstName")}<#if messagesPerField.exists('firstName')><span class="required">*</span></#if></label>
-                <input type="text" id="firstName" name="firstName" value="${(register.formData.firstName!'')}"
-                       aria-invalid="<#if messagesPerField.existsError('firstName')>true</#if>"/>
-                <#if messagesPerField.existsError('firstName')>
-                    <span class="error-message">${kcSanitize(messagesPerField.get('firstName'))?no_esc}</span>
-                </#if>
-            </div>
-
-            <div class="form-group">
-                <label for="lastName">${msg("lastName")}<#if messagesPerField.exists('lastName')><span class="required">*</span></#if></label>
-                <input type="text" id="lastName" name="lastName" value="${(register.formData.lastName!'')}"
-                       aria-invalid="<#if messagesPerField.existsError('lastName')>true</#if>"/>
-                <#if messagesPerField.existsError('lastName')>
-                    <span class="error-message">${kcSanitize(messagesPerField.get('lastName'))?no_esc}</span>
-                </#if>
-            </div>
-
-            <div class="form-group">
-                <label for="email">${msg("email")}<span class="required">*</span></label>
-                <input type="email" id="email" name="email" value="${(register.formData.email!'')}" autocomplete="email"
-                       aria-invalid="<#if messagesPerField.existsError('email')>true</#if>"/>
-                <#if messagesPerField.existsError('email')>
-                    <span class="error-message">${kcSanitize(messagesPerField.get('email'))?no_esc}</span>
-                </#if>
-            </div>
-
-            <#if !realm.registrationEmailAsUsername>
-                <div class="form-group">
-                    <label for="username">${msg("username")}<span class="required">*</span></label>
-                    <input type="text" id="username" name="username" value="${(register.formData.username!'')}" autocomplete="username"
-                           aria-invalid="<#if messagesPerField.existsError('username')>true</#if>"/>
-                    <#if messagesPerField.existsError('username')>
-                        <span class="error-message">${kcSanitize(messagesPerField.get('username'))?no_esc}</span>
+        <form id="kc-register-form" class="${properties.kcFormClass!}" action="${url.registrationAction}" method="post" novalidate="novalidate">
+            <@userProfileCommons.userProfileFormFields; callback, attribute>
+                <#if callback = "afterField">
+                <#-- render password fields just under the username or email (if used as username) -->
+                    <#if passwordRequired?? && (attribute.name == 'username' || (attribute.name == 'email' && realm.registrationEmailAsUsername))>
+                        <@field.password name="password" required=true label=msg("password") autocomplete="new-password" />
+                        <@field.password name="password-confirm" required=true label=msg("passwordConfirm") autocomplete="new-password" />
                     </#if>
+                </#if>
+            </@userProfileCommons.userProfileFormFields>
+
+            <@registerCommons.termsAcceptance/>
+
+            <#if recaptchaRequired?? && (recaptchaVisible!false)>
+                <div class="form-group">
+                    <div class="${properties.kcInputWrapperClass!}">
+                        <div class="g-recaptcha" data-size="compact" data-sitekey="${recaptchaSiteKey}" data-action="${recaptchaAction}"></div>
+                    </div>
                 </div>
             </#if>
 
-            <#if passwordRequired??>
-                <div class="form-group">
-                    <label for="password">${msg("password")}<span class="required">*</span></label>
-                    <input type="password" id="password" name="password" autocomplete="new-password"
-                           aria-invalid="<#if messagesPerField.existsError('password','password-confirm')>true</#if>"/>
-                    <#if messagesPerField.existsError('password')>
-                        <span class="error-message">${kcSanitize(messagesPerField.get('password'))?no_esc}</span>
-                    </#if>
+            <#if recaptchaRequired?? && !(recaptchaVisible!false)>
+                <script>
+                    function onSubmitRecaptcha(token) {
+                        document.getElementById("kc-register-form").requestSubmit();
+                    }
+                </script>
+                <div id="kc-form-buttons" class="${properties.kcFormButtonsClass!}">
+                    <button class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!} g-recaptcha"
+                            data-sitekey="${recaptchaSiteKey}" data-callback="onSubmitRecaptcha" data-action="${recaptchaAction}" type="submit">
+                        ${msg("doRegister")}
+                    </button>
                 </div>
-
-                <div class="form-group">
-                    <label for="password-confirm">${msg("passwordConfirm")}<span class="required">*</span></label>
-                    <input type="password" id="password-confirm" name="password-confirm" autocomplete="new-password"
-                           aria-invalid="<#if messagesPerField.existsError('password-confirm')>true</#if>"/>
-                    <#if messagesPerField.existsError('password-confirm')>
-                        <span class="error-message">${kcSanitize(messagesPerField.get('password-confirm'))?no_esc}</span>
-                    </#if>
+            <#else>
+                <div id="kc-form-buttons" class="${properties.kcFormButtonsClass!}">
+                    <input class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!}" type="submit" value="${msg("doRegister")}"/>
                 </div>
             </#if>
 
-            <div class="form-group">
-                <button class="btn" type="submit">${msg("doRegister")}</button>
+            <div class="${properties.kcFormGroupClass!} pf-v5-c-login__main-footer-band">
+                <div id="kc-form-options" class="${properties.kcFormOptionsClass!} pf-v5-c-login__main-footer-band-item">
+                    <div class="${properties.kcFormOptionsWrapperClass!}">
+                        <span><a href="${url.loginUrl}">${kcSanitize(msg("backToLogin"))?no_esc}</a></span>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-footer">
-                <span><a class="text-link" href="${url.loginUrl}">${msg("backToLogin")}</a></span>
-            </div>
         </form>
+
+        <@validator.templates/>
+        <@validator.script field="password"/>
     </#if>
 </@layout.registrationLayout>
