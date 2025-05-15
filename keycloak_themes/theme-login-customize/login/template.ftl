@@ -13,6 +13,8 @@
         <meta name="description" content="Đăng nhập hệ thống tin tức">
         <meta name="theme-color" content="#0D47A1">
 
+        <#assign darkModeEnabled = ((properties.darkMode!'false')?boolean) />
+
         <#if properties.meta?has_content>
             <#list properties.meta?split(' ') as meta>
                 <meta name="${meta?split('==')[0]}" content="${meta?split('==')[1]}"/>
@@ -42,16 +44,16 @@
             }
         }
         </script>
-        <#if darkMode>
+        <#if darkModeEnabled>
             <script type="module" async blocking="render">
-                const DARK_MODE_CLASS = "${properties.kcDarkModeClass}";
+                const DARK_MODE_CLASS = "${properties.kcDarkModeClass!'pf-v5-theme-dark'}";
                 const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
                 updateDarkMode(mediaQuery.matches);
                 mediaQuery.addEventListener("change", (event) => updateDarkMode(event.matches));
 
                 function updateDarkMode(isEnabled) {
-                    const {classList} = document.documentElement;
+                    const { classList } = document.documentElement;
 
                     if (isEnabled) {
                         classList.add(DARK_MODE_CLASS);
