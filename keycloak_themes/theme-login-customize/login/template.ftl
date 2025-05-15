@@ -1,6 +1,6 @@
 <#macro registrationLayout bodyClass="" displayInfo=false displayMessage=true displayRequiredFields=false>
     <!DOCTYPE html>
-    <html class="${properties.kcHtmlClass!}" lang="${lang}"<#if realm.internationalizationEnabled> dir="${(locale.rtl)?then('rtl','ltr')}"</#if>>
+    <html class="${properties.kcHtmlClass!}" lang="${locale.currentLanguageTag!'en'}">
 
     <head>
         <meta charset="utf-8">
@@ -129,6 +129,16 @@
 
             .btn:hover {
                 background-color: #0d65d9;
+            }
+
+            .btn-secondary {
+                background-color: #f1f3f4;
+                color: #3c4043;
+                margin-top: 10px;
+            }
+
+            .btn-secondary:hover {
+                background-color: #e8eaed;
             }
 
             .text-center {
