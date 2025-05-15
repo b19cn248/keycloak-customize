@@ -1,6 +1,6 @@
 <#macro registrationLayout bodyClass="" displayInfo=false displayMessage=true displayRequiredFields=false>
     <!DOCTYPE html>
-    <html class="${properties.kcHtmlClass!}" lang="${locale.currentLanguageTag!'en'}">
+    <html class="${properties.kcHtmlClass!}" lang="en">
 
     <head>
         <meta charset="utf-8">
@@ -15,15 +15,21 @@
         </#if>
         <title>${msg("loginTitle",(realm.displayName!''))}</title>
         <link rel="icon" href="${url.resourcesPath}/img/favicon.ico" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
         <style>
             :root {
                 --primary-color: #1a73e8;
+                --primary-hover: #1669d9;
+                --primary-active: #135cbe;
                 --secondary-color: #f8f9fa;
                 --text-color: #202124;
+                --text-secondary: #5f6368;
                 --border-color: #dadce0;
                 --focus-color: #1a73e8;
                 --error-color: #d93025;
+                --shadow-sm: 0 2px 6px rgba(0,0,0,0.08);
+                --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
             }
 
             * {
@@ -36,42 +42,51 @@
                 padding: 0;
                 display: flex;
                 min-height: 100vh;
-                background-color: #f8f9fa;
+                background: linear-gradient(135deg, #f7faff 0%, #e4f0ff 100%);
                 color: var(--text-color);
+                align-items: center;
+                justify-content: center;
             }
 
             .login-container {
                 max-width: 420px;
                 margin: auto;
-                padding: 40px 30px;
+                padding: 40px 32px;
                 background: white;
-                border-radius: 8px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+                border-radius: 12px;
+                box-shadow: var(--shadow-md);
                 width: 100%;
+                border: 1px solid rgba(0,0,0,0.05);
+                animation: fadeIn 0.5s ease;
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
             }
 
             .smart-feeds-logo {
                 text-align: center;
-                margin-bottom: 30px;
+                margin-bottom: 24px;
             }
 
-            .smart-feeds-logo h1 {
+            .smart-feeds-logo a {
+                display: inline-flex;
+                align-items: center;
+                text-decoration: none;
+                color: var(--primary-color);
                 font-size: 28px;
                 font-weight: 500;
-                color: var(--primary-color);
-                margin: 0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
+                transition: transform 0.2s ease;
             }
 
-            .smart-feeds-logo h1::before {
-                content: "";
-                display: inline-block;
-                width: 24px;
-                height: 24px;
-                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%231a73e8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 11a9 9 0 0 1 9 9'%3E%3C/path%3E%3Cpath d='M4 4a16 16 0 0 1 16 16'%3E%3C/path%3E%3Ccircle cx='5' cy='19' r='1'%3E%3C/circle%3E%3C/svg%3E");
+            .smart-feeds-logo a:hover {
+                transform: scale(1.03);
+            }
+
+            .smart-feeds-logo i {
                 margin-right: 10px;
+                font-size: 24px;
             }
 
             .form-group {
@@ -83,6 +98,7 @@
                 margin-bottom: 8px;
                 font-size: 14px;
                 font-weight: 500;
+                color: var(--text-color);
             }
 
             .label-with-link {
@@ -95,45 +111,88 @@
                 font-size: 14px;
             }
 
+            .input-wrapper {
+                position: relative;
+            }
+
+            .input-wrapper i {
+                position: absolute;
+                left: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text-secondary);
+                font-size: 16px;
+            }
+
             input[type="text"],
             input[type="password"],
             input[type="email"] {
                 width: 100%;
-                padding: 12px 16px;
+                padding: 12px 16px 12px 40px;
                 font-size: 16px;
                 border: 1px solid var(--border-color);
-                border-radius: 4px;
-                box-sizing: border-box;
-                transition: border-color 0.2s;
+                border-radius: 8px;
+                transition: all 0.2s;
+                background-color: #f7f9fc;
             }
 
             input:focus {
                 outline: none;
                 border-color: var(--focus-color);
                 box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+                background-color: #fff;
+            }
+
+            .password-toggle {
+                position: absolute;
+                right: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                color: var(--text-secondary);
+                cursor: pointer;
+                font-size: 16px;
+            }
+
+            .password-toggle:hover {
+                color: var(--primary-color);
             }
 
             .btn {
-                display: block;
+                display: flex;
                 width: 100%;
-                padding: 12px 16px;
+                padding: 13px 16px;
                 background-color: var(--primary-color);
                 color: white;
                 border: none;
-                border-radius: 4px;
+                border-radius: 8px;
                 font-size: 16px;
                 font-weight: 500;
                 cursor: pointer;
-                transition: background-color 0.2s;
+                transition: background-color 0.2s, transform 0.1s;
+                justify-content: center;
+                align-items: center;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+
+            .btn i {
+                margin-right: 8px;
             }
 
             .btn:hover {
-                background-color: #0d65d9;
+                background-color: var(--primary-hover);
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            }
+
+            .btn:active {
+                background-color: var(--primary-active);
+                transform: translateY(1px);
             }
 
             .btn-secondary {
                 background-color: #f1f3f4;
-                color: #3c4043;
+                color: var(--text-color);
                 margin-top: 10px;
             }
 
@@ -149,58 +208,63 @@
                 color: var(--primary-color);
                 text-decoration: none;
                 font-weight: 500;
+                transition: color 0.2s;
             }
 
             .text-link:hover {
+                color: var(--primary-hover);
                 text-decoration: underline;
             }
 
             .alert {
                 padding: 12px 16px;
                 margin-bottom: 20px;
-                border-radius: 4px;
-                border-left: 4px solid;
+                border-radius: 8px;
                 font-size: 14px;
+                display: flex;
+                align-items: center;
+            }
+
+            .alert i {
+                margin-right: 10px;
+                font-size: 16px;
             }
 
             .alert-error {
                 background-color: #fce8e6;
-                border-left-color: var(--error-color);
                 color: var(--error-color);
             }
 
             .alert-success {
                 background-color: #e6f4ea;
-                border-left-color: #0f9d58;
                 color: #0f9d58;
             }
 
             .alert-warning {
                 background-color: #fff8e1;
-                border-left-color: #f9a825;
                 color: #996500;
             }
 
             .alert-info {
                 background-color: #e8f0fe;
-                border-left-color: #1a73e8;
                 color: #174ea6;
             }
 
             .form-footer {
                 margin-top: 24px;
-                font-size: 14px;
                 text-align: center;
+                font-size: 14px;
+                color: var(--text-secondary);
             }
 
             .form-header {
-                margin-bottom: 32px;
+                margin-bottom: 28px;
                 text-align: center;
             }
 
             .form-header h2 {
                 font-size: 24px;
-                font-weight: 500;
+                font-weight: 600;
                 margin: 0;
                 color: var(--text-color);
             }
@@ -215,6 +279,7 @@
                 align-items: center;
                 cursor: pointer;
                 font-size: 14px;
+                color: var(--text-secondary);
             }
 
             .checkbox-label input {
@@ -236,7 +301,7 @@
             .instruction {
                 font-size: 14px;
                 margin-bottom: 24px;
-                color: #5f6368;
+                color: var(--text-secondary);
             }
 
             @media (max-width: 480px) {
@@ -245,10 +310,15 @@
                     box-shadow: none;
                     border-radius: 0;
                     padding: 24px 16px;
+                    margin: 0;
+                    height: 100vh;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
                 }
 
                 body {
-                    background-color: white;
+                    background: white;
                 }
             }
         </style>
@@ -289,7 +359,10 @@
     <body>
     <div class="login-container" role="main">
         <div class="smart-feeds-logo">
-            <h1>Smart Feeds</h1>
+            <a href="#">
+                <i class="fas fa-rss"></i>
+                <span>Smart Feeds</span>
+            </a>
         </div>
 
         <div class="form-header">
@@ -298,6 +371,10 @@
 
         <#if displayMessage && message?has_content && (message.type != 'warning' || !isAppInitiatedAction??)>
             <div class="alert alert-${message.type}">
+                <#if message.type = 'success'><i class="fas fa-check-circle"></i></#if>
+                <#if message.type = 'warning'><i class="fas fa-exclamation-triangle"></i></#if>
+                <#if message.type = 'error'><i class="fas fa-times-circle"></i></#if>
+                <#if message.type = 'info'><i class="fas fa-info-circle"></i></#if>
                 ${kcSanitize(message.summary)?no_esc}
             </div>
         </#if>
@@ -310,6 +387,28 @@
             </div>
         </#if>
     </div>
+
+    <script>
+        // Toggle password visibility
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButtons = document.querySelectorAll('.password-toggle');
+
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const passwordInput = this.previousElementSibling;
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+
+                    // Toggle icon
+                    if (type === 'text') {
+                        this.innerHTML = '<i class="fas fa-eye-slash"></i>';
+                    } else {
+                        this.innerHTML = '<i class="fas fa-eye"></i>';
+                    }
+                });
+            });
+        });
+    </script>
     </body>
     </html>
 </#macro>

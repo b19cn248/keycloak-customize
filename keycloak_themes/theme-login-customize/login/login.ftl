@@ -8,8 +8,11 @@
                 <label for="username">
                     <#if !realm.loginWithEmailAllowed>${msg("username")}<#elseif !realm.registrationEmailAsUsername>${msg("usernameOrEmail")}<#else>${msg("email")}</#if>
                 </label>
-                <input tabindex="1" id="username" name="username" value="${(login.username!'')}" type="text" autofocus autocomplete="username"
-                       aria-invalid="<#if messagesPerField.existsError('username','password')>true</#if>"/>
+                <div class="input-wrapper">
+                    <i class="fas fa-user"></i>
+                    <input tabindex="1" id="username" name="username" value="${(login.username!'')}" type="text" autofocus autocomplete="username"
+                           aria-invalid="<#if messagesPerField.existsError('username','password')>true</#if>"/>
+                </div>
 
                 <#if messagesPerField.existsError('username','password')>
                     <span class="error-message">${kcSanitize(messagesPerField.getFirstError('username','password'))?no_esc}</span>
@@ -23,8 +26,12 @@
                         <a class="text-link float-right" tabindex="5" href="${url.loginResetCredentialsUrl}">${msg("doForgotPassword")}</a>
                     </#if>
                 </div>
-                <input tabindex="2" id="password" name="password" type="password" autocomplete="current-password"
-                       aria-invalid="<#if messagesPerField.existsError('username','password')>true</#if>"/>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input tabindex="2" id="password" name="password" type="password" autocomplete="current-password"
+                           aria-invalid="<#if messagesPerField.existsError('username','password')>true</#if>"/>
+                    <button type="button" class="password-toggle"><i class="fas fa-eye"></i></button>
+                </div>
             </div>
 
             <#if realm.rememberMe && !usernameHidden??>
@@ -38,7 +45,7 @@
 
             <div class="form-group">
                 <button tabindex="4" name="login" id="kc-login" type="submit" class="btn">
-                    ${msg("doLogIn")}
+                    <i class="fas fa-sign-in-alt"></i> ${msg("doLogIn")}
                 </button>
             </div>
         </form>
