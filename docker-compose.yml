@@ -15,7 +15,7 @@ services:
     # Không có ports mapping - chỉ accessible từ các container khác trong cùng network
 
   keycloak:
-    image: quay.io/keycloak/keycloak:23.0.1
+    image: quay.io/keycloak/keycloak:26.2.5
     volumes:
       - ./keycloak_themes:/opt/keycloak/themes
       - ./plugins/keycloak-2fa-email-authenticator-1.0.0.0-SNAPSHOT.jar:/opt/keycloak/providers/keycloak-2fa-email-authenticator-1.0.0.0-SNAPSHOT.jar
