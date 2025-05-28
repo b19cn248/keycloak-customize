@@ -27,7 +27,6 @@ services:
       - KC_DB=postgres
       - KC_DB_URL=jdbc:postgresql://postgresql/keycloak?user=postgres&password=postgres
       - KC_HOSTNAME=keycloak.openlearnhub.io.vn
-      - PROXY_ADDRESS_FORWARDING=true
       - KC_PROXY=edge
     command:
       - start-dev
