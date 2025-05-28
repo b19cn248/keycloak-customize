@@ -19,7 +19,6 @@ services:
     volumes:
       - ./keycloak_themes:/opt/keycloak/themes
       - ./plugins/keycloak-2fa-email-authenticator-1.0.0.0-SNAPSHOT.jar:/opt/keycloak/providers/keycloak-2fa-email-authenticator-1.0.0.0-SNAPSHOT.jar
-      - ./sync-user/target/sync-user-1.0.0.jar:/opt/keycloak/providers/sync-user-1.0.0.jar
       - ./sync-user/target/sync-user-1.0.0-jar-with-dependencies.jar:/opt/keycloak/providers/sync-user-1.0.0-jar-with-dependencies.jar
       - ./plugins/email:/opt/keycloak/themes/base/email
     environment:
