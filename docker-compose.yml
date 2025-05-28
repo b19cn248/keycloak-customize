@@ -3,7 +3,7 @@ version: '2'
 services:
   postgres:
     image: postgres:15
-    container_name: postgres
+    container_name: postgresql
     environment:
       - POSTGRES_DB=keycloak
       - POSTGRES_USER=postgres
@@ -26,7 +26,7 @@ services:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=R9t!2bXz@5zQ#4kF
       - KC_DB=postgres
-      - KC_DB_URL=jdbc:postgresql://postgres/keycloak?user=postgres&password=postgres
+      - KC_DB_URL=jdbc:postgresql://postgresql/keycloak?user=postgres&password=postgres
       - KC_HOSTNAME=keycloak.openlearnhub.io.vn
       - PROXY_ADDRESS_FORWARDING=true
       - KC_PROXY=edge
