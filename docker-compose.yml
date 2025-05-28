@@ -1,6 +1,19 @@
 version: '2'
 
 services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      - POSTGRES_DB=keycloak
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - shop-sport-micro
+    # Không có ports mapping - chỉ accessible từ các container khác trong cùng network
+
   keycloak:
     image: quay.io/keycloak/keycloak:23.0.1
     volumes:
@@ -24,10 +37,12 @@ services:
     container_name: keycloak
     networks:
       - shop-sport-micro
+    depends_on:
+      - postgres
 
 networks:
   shop-sport-micro:
     external: true
 
 volumes:
-  postgres_data: # Định nghĩa volume ngoài
+  postgres_data:
